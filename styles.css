@@ -521,11 +521,13 @@ main {
 .calendar-header button:focus-visible,
 .calendar-view-switch button:focus-visible,
 .calendar-filter select:focus-visible,
+.calendar-filter input:focus-visible,
 .day-button:focus-visible,
 .calendar-form input:focus-visible,
 .calendar-form select:focus-visible,
 .calendar-form button:focus-visible,
 .calendar-event-edit:focus-visible,
+.calendar-event-toggle:focus-visible,
 .calendar-event-remove:focus-visible {
     outline: 2px solid var(--page-accent);
     outline-offset: 2px;
@@ -597,6 +599,24 @@ main {
     border-radius: 10px;
     font: inherit;
     background: rgba(255, 255, 255, 0.84);
+}
+
+.calendar-filter input[type="search"] {
+    min-width: 150px;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 10px;
+    font: inherit;
+    background: rgba(255, 255, 255, 0.84);
+}
+
+.calendar-filter-check {
+    gap: 0.35rem;
+}
+
+.calendar-filter-check input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
 }
 
 .calendar-weekdays,
@@ -732,7 +752,7 @@ main {
 
 .calendar-form-row {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.5rem;
 }
 
@@ -784,6 +804,21 @@ main {
     filter: brightness(1.05);
 }
 
+.calendar-form-message {
+    margin: 0;
+    padding: 0.55rem 0.6rem;
+    border: 1px solid rgba(31, 122, 87, 0.24);
+    border-radius: 12px;
+    color: #18563f;
+    background: rgba(31, 122, 87, 0.1);
+}
+
+.calendar-form-message.is-error {
+    border-color: rgba(162, 51, 51, 0.3);
+    color: #7d2626;
+    background: rgba(255, 239, 239, 0.7);
+}
+
 .is-hidden {
     display: none;
 }
@@ -815,6 +850,14 @@ main {
     background: rgba(255, 255, 255, 0.72);
 }
 
+.calendar-event-item.is-completed {
+    opacity: 0.82;
+}
+
+.calendar-event-item.is-completed .calendar-event-title {
+    text-decoration: line-through;
+}
+
 .calendar-event-title {
     overflow-wrap: anywhere;
 }
@@ -835,6 +878,7 @@ main {
 }
 
 .calendar-event-edit,
+.calendar-event-toggle,
 .calendar-event-remove {
     padding: 0.4rem 0.55rem;
     border-radius: 10px;
@@ -842,6 +886,7 @@ main {
     cursor: pointer;
 }
 
+.calendar-event-toggle,
 .calendar-event-edit {
     border: 1px solid rgba(53, 39, 28, 0.24);
     background: rgba(255, 255, 255, 0.78);
@@ -854,12 +899,58 @@ main {
     color: #7d2626;
 }
 
+.calendar-event-toggle:hover,
 .calendar-event-edit:hover {
     background: rgba(255, 255, 255, 0.95);
 }
 
 .calendar-event-remove:hover {
     background: rgba(255, 239, 239, 0.95);
+}
+
+.calendar-storage-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.history-note.is-error {
+    color: #7d2626;
+}
+
+.calendar-upcoming {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.calendar-upcoming h4 {
+    margin: 0;
+}
+
+.calendar-upcoming-list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.calendar-upcoming-item {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.6rem;
+    border: 1px solid rgba(53, 39, 28, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.66);
+}
+
+.calendar-upcoming-item.is-completed .calendar-upcoming-title {
+    text-decoration: line-through;
+    opacity: 0.82;
+}
+
+.calendar-upcoming-meta {
+    color: var(--muted);
 }
 
 .tetris-stage {

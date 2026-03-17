@@ -83,6 +83,16 @@
 								<option value="study">Study</option>
 							</select>
 						</div>
+
+						<div class="calendar-filter">
+							<label for="calendar-search-text">Search</label>
+							<input id="calendar-search-text" name="calendarSearchText" type="search" placeholder="Search title...">
+						</div>
+
+						<div class="calendar-filter calendar-filter-check">
+							<label for="calendar-show-completed">Show done</label>
+							<input id="calendar-show-completed" name="calendarShowCompleted" type="checkbox" checked>
+						</div>
 					</div>
 
 					<div class="calendar-weekdays" id="calendar-weekdays" aria-hidden="true">
@@ -125,17 +135,44 @@
 									<option value="study">Study</option>
 								</select>
 							</div>
+
+							<div class="calendar-field">
+								<label for="calendar-event-recurrence">Repeat</label>
+								<select id="calendar-event-recurrence" name="eventRecurrence">
+									<option value="none">Does not repeat</option>
+									<option value="daily">Daily</option>
+									<option value="weekly">Weekly</option>
+									<option value="monthly">Monthly</option>
+								</select>
+							</div>
 						</div>
 
 						<div class="calendar-form-actions">
 							<button type="submit" id="calendar-event-submit">Add event</button>
 							<button type="button" id="calendar-event-cancel" class="calendar-event-cancel is-hidden">Cancel edit</button>
 						</div>
+
+						<p id="calendar-form-message" class="calendar-form-message is-hidden" aria-live="polite"></p>
 					</form>
 
 					<ul id="calendar-event-list" class="calendar-event-list" aria-live="polite">
 						<li class="event-empty">No events for this day yet.</li>
 					</ul>
+
+					<div class="calendar-storage-tools">
+						<button type="button" id="calendar-export-events" class="calendar-event-edit">Export JSON</button>
+						<button type="button" id="calendar-import-events" class="calendar-event-edit">Import JSON</button>
+						<input id="calendar-import-file" type="file" accept="application/json,.json" class="is-hidden">
+					</div>
+
+					<p id="calendar-storage-message" class="history-note" aria-live="polite"></p>
+
+					<section class="calendar-upcoming" aria-label="Upcoming events">
+						<h4>Upcoming 7 days</h4>
+						<ul id="calendar-upcoming-list" class="calendar-upcoming-list" aria-live="polite">
+							<li class="event-empty">No upcoming events in the next 7 days.</li>
+						</ul>
+					</section>
 
 					<p class="history-note">Events are saved in your browser storage, so they stay after refresh.</p>
 				</aside>

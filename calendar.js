@@ -1,4 +1,5 @@
 const CALENDAR_STORAGE_KEY = "freetime-calendar-events-v1";
+const CALENDAR_EXPORT_VERSION = 2;
 const CALENDAR_MONTH_NAMES = [
 	"January",
 	"February",
@@ -20,6 +21,12 @@ const CALENDAR_CATEGORY_LABELS = {
 	personal: "Personal",
 	study: "Study",
 };
+const CALENDAR_RECURRENCE_LABELS = {
+	none: "No repeat",
+	daily: "Daily",
+	weekly: "Weekly",
+	monthly: "Monthly",
+};
 
 function initCalendarPage() {
 	const ui = {
@@ -28,6 +35,8 @@ function initCalendarPage() {
 		monthTitle: document.getElementById("calendar-month-title"),
 		viewButtons: Array.from(document.querySelectorAll("button[data-calendar-view]")),
 		filterCategory: document.getElementById("calendar-filter-category"),
+		searchInput: document.getElementById("calendar-search-text"),
+		showCompletedInput: document.getElementById("calendar-show-completed"),
 		weekdayRow: document.getElementById("calendar-weekdays"),
 		grid: document.getElementById("calendar-grid"),
 		selectedDate: document.getElementById("calendar-selected-date"),
@@ -36,9 +45,16 @@ function initCalendarPage() {
 		eventDateInput: document.getElementById("calendar-event-date"),
 		eventTimeInput: document.getElementById("calendar-event-time"),
 		eventCategoryInput: document.getElementById("calendar-event-category"),
+		eventRecurrenceInput: document.getElementById("calendar-event-recurrence"),
 		eventSubmitButton: document.getElementById("calendar-event-submit"),
 		eventCancelButton: document.getElementById("calendar-event-cancel"),
+		formMessage: document.getElementById("calendar-form-message"),
 		eventList: document.getElementById("calendar-event-list"),
+		exportButton: document.getElementById("calendar-export-events"),
+		importButton: document.getElementById("calendar-import-events"),
+		importInput: document.getElementById("calendar-import-file"),
+		storageMessage: document.getElementById("calendar-storage-message"),
+		upcomingList: document.getElementById("calendar-upcoming-list"),
 	};
 
 	if (
@@ -47,6 +63,8 @@ function initCalendarPage() {
 		!ui.monthTitle ||
 		!ui.viewButtons.length ||
 		!ui.filterCategory ||
+		!ui.searchInput ||
+		!ui.showCompletedInput ||
 		!ui.weekdayRow ||
 		!ui.grid ||
 		!ui.selectedDate ||
@@ -55,17 +73,23 @@ function initCalendarPage() {
 		!ui.eventDateInput ||
 		!ui.eventTimeInput ||
 		!ui.eventCategoryInput ||
+		!ui.eventRecurrenceInput ||
 		!ui.eventSubmitButton ||
 		!ui.eventCancelButton ||
-		!ui.eventList
+		!ui.formMessage ||
+		!ui.eventList ||
+		!ui.exportButton ||
+		!ui.importButton ||
+		!ui.importInput ||
+		!ui.storageMessage ||
+		!ui.upcomingList
 	) {
 		return;
 	}
 
 	const state = createInitialCalendarState();
 
-	// Felles flyt i alle handlers: oppdater state, avslutt eventuell redigering, og render på nytt.
-
+	// Felles flyt i handlers: oppdater state og tegn visningen pa nytt.
 	ui.prevButton.addEventListener("click", () => {
 		moveCalendarPeriod(state, -1);
 		cancelCalendarEventEdit(state, ui);
@@ -92,6 +116,17 @@ function initCalendarPage() {
 		renderCalendarPage(state, ui);
 	});
 
+	ui.searchInput.addEventListener("input", () => {
+		state.searchQuery = ui.searchInput.value.trim().toLowerCase();
+		cancelCalendarEventEdit(state, ui);
+		renderCalendarPage(state, ui);
+	});
+
+	ui.showCompletedInput.addEventListener("change", () => {
+		state.showCompleted = Boolean(ui.showCompletedInput.checked);
+		renderCalendarPage(state, ui);
+	});
+
 	ui.grid.addEventListener("click", (event) => {
 		const button = event.target.closest("button[data-date-key]");
 		if (!button) {
@@ -109,8 +144,13 @@ function initCalendarPage() {
 		renderCalendarPage(state, ui);
 	});
 
+	ui.eventForm.addEventListener("input", () => {
+		clearCalendarMessage(ui);
+	});
+
 	ui.eventCancelButton.addEventListener("click", () => {
 		cancelCalendarEventEdit(state, ui);
+		clearCalendarMessage(ui);
 		renderCalendarPage(state, ui);
 	});
 
@@ -131,6 +171,15 @@ function initCalendarPage() {
 			return;
 		}
 
+		if (button.dataset.action === "event-toggle-complete") {
+			toggleCalendarEventCompleted(state, eventId);
+			if (state.editingEventId === eventId) {
+				cancelCalendarEventEdit(state, ui);
+			}
+			renderCalendarPage(state, ui);
+			return;
+		}
+
 		if (button.dataset.action === "event-delete") {
 			removeCalendarEvent(state, eventId);
 			if (state.editingEventId === eventId) {
@@ -140,7 +189,46 @@ function initCalendarPage() {
 		}
 	});
 
+	ui.exportButton.addEventListener("click", () => {
+		try {
+			exportCalendarEvents(state.events);
+			setCalendarStorageMessage(ui, `Exported ${state.events.length} event(s).`);
+		} catch {
+			setCalendarStorageMessage(ui, "Could not export events.", true);
+		}
+	});
+
+	ui.importButton.addEventListener("click", () => {
+		ui.importInput.click();
+	});
+
+	ui.importInput.addEventListener("change", () => {
+		const file = ui.importInput.files ? ui.importInput.files[0] : null;
+		if (!file) {
+			return;
+		}
+
+		importCalendarEventsFromFile(file, (errorMessage, importedEvents) => {
+			if (errorMessage) {
+				setCalendarStorageMessage(ui, errorMessage, true);
+				return;
+			}
+
+			state.events = importedEvents;
+			state.nextEventId = getNextCalendarEventId(state.events);
+			cancelCalendarEventEdit(state, ui);
+			clearCalendarMessage(ui);
+			setCalendarStorageMessage(ui, `Imported ${importedEvents.length} event(s).`);
+			renderCalendarPage(state, ui);
+		});
+
+		// Tillat import av samme fil flere ganger ved behov.
+		ui.importInput.value = "";
+	});
+
 	resetCalendarEventForm(ui, state.selectedDateKey);
+	clearCalendarMessage(ui);
+	clearCalendarStorageMessage(ui);
 	renderCalendarPage(state, ui);
 }
 
@@ -151,6 +239,8 @@ function createInitialCalendarState() {
 	return {
 		viewMode: "month",
 		filterCategory: "all",
+		searchQuery: "",
+		showCompleted: true,
 		viewYear: today.getFullYear(),
 		viewMonth: today.getMonth(),
 		selectedDateKey: toDateKey(today),
@@ -171,8 +261,7 @@ function moveCalendarPeriod(state, step) {
 	const selected = fromDateKey(state.selectedDateKey);
 	let nextDate;
 
-	// -1 betyr bakover, +1 betyr fremover. Hvor stort hoppet er styres av visning.
-
+	// -1 betyr bakover, +1 betyr fremover. Hoppet styres av visning.
 	if (state.viewMode === "month") {
 		nextDate = new Date(state.viewYear, state.viewMonth + step, 1);
 	} else if (state.viewMode === "week") {
@@ -198,6 +287,7 @@ function renderCalendarPage(state, ui) {
 	renderCalendarGrid(state, ui);
 	renderCalendarEventPanel(state, ui);
 	renderCalendarFormState(state, ui);
+	renderCalendarUpcomingPanel(state, ui);
 }
 
 function renderCalendarToolbarState(state, ui) {
@@ -209,9 +299,11 @@ function renderCalendarToolbarState(state, ui) {
 	}
 
 	ui.filterCategory.value = state.filterCategory;
+	ui.searchInput.value = state.searchQuery;
+	ui.showCompletedInput.checked = state.showCompleted;
 }
 
-// Denne funksjonen bygger alle datocellene basert på valgt visning:
+// Denne funksjonen bygger alle datocellene basert pa valgt visning:
 // month = 42 celler, week = 7 celler, day = 1 celle.
 function renderCalendarGrid(state, ui) {
 	const dates = getCalendarDatesForCurrentView(state);
@@ -223,9 +315,11 @@ function renderCalendarGrid(state, ui) {
 	ui.grid.classList.add(`view-${state.viewMode}`);
 	ui.grid.replaceChildren();
 
+	const filters = createCalendarFilters(state);
+
 	for (const date of dates) {
 		const dateKey = toDateKey(date);
-		const eventCount = getVisibleCalendarEventsByDateKey(state.events, dateKey, state.filterCategory).length;
+		const eventCount = getVisibleCalendarEventsByDateKey(state.events, dateKey, filters).length;
 
 		const dayButton = document.createElement("button");
 		dayButton.type = "button";
@@ -278,14 +372,27 @@ function renderCalendarEventPanel(state, ui) {
 
 	ui.eventList.replaceChildren();
 
-	// Panelet viser kun events for valgt dato, med aktivt kategori-filter.
-	const visibleEvents = getVisibleCalendarEventsByDateKey(state.events, state.selectedDateKey, state.filterCategory);
+	// Panelet viser events for valgt dato, med kategori/sok og ferdig-filter.
+	const visibleEvents = getVisibleCalendarEventsByDateKey(
+		state.events,
+		state.selectedDateKey,
+		createCalendarFilters(state)
+	);
+
 	if (!visibleEvents.length) {
 		const emptyItem = document.createElement("li");
 		emptyItem.className = "event-empty";
-		emptyItem.textContent = state.filterCategory === "all"
-			? "No events for this day yet."
-			: "No events in this category for this day.";
+
+		if (state.searchQuery) {
+			emptyItem.textContent = "No events match this search for this day.";
+		} else if (state.filterCategory !== "all") {
+			emptyItem.textContent = "No events in this category for this day.";
+		} else if (!state.showCompleted) {
+			emptyItem.textContent = "No open events for this day.";
+		} else {
+			emptyItem.textContent = "No events for this day yet.";
+		}
+
 		ui.eventList.append(emptyItem);
 		return;
 	}
@@ -293,6 +400,7 @@ function renderCalendarEventPanel(state, ui) {
 	for (const eventEntry of visibleEvents) {
 		const item = document.createElement("li");
 		item.className = "calendar-event-item";
+		item.classList.toggle("is-completed", eventEntry.completed);
 
 		const main = document.createElement("div");
 		main.className = "calendar-event-main";
@@ -310,6 +418,13 @@ function renderCalendarEventPanel(state, ui) {
 		const actions = document.createElement("div");
 		actions.className = "calendar-event-actions";
 
+		const completeButton = document.createElement("button");
+		completeButton.type = "button";
+		completeButton.className = "calendar-event-toggle";
+		completeButton.dataset.action = "event-toggle-complete";
+		completeButton.dataset.id = String(eventEntry.id);
+		completeButton.textContent = eventEntry.completed ? "Mark open" : "Mark done";
+
 		const editButton = document.createElement("button");
 		editButton.type = "button";
 		editButton.className = "calendar-event-edit";
@@ -324,7 +439,7 @@ function renderCalendarEventPanel(state, ui) {
 		removeButton.dataset.id = String(eventEntry.id);
 		removeButton.textContent = "Remove";
 
-		actions.append(editButton, removeButton);
+		actions.append(completeButton, editButton, removeButton);
 		item.append(main, actions);
 		ui.eventList.append(item);
 	}
@@ -336,9 +451,55 @@ function renderCalendarFormState(state, ui) {
 	ui.eventCancelButton.classList.toggle("is-hidden", !isEditing);
 }
 
+function renderCalendarUpcomingPanel(state, ui) {
+	ui.upcomingList.replaceChildren();
+
+	const filters = createCalendarFilters(state);
+	const startDate = fromDateKey(state.selectedDateKey);
+	const nextDates = buildSequentialDates(startDate, 7);
+	const upcoming = [];
+
+	for (const date of nextDates) {
+		const dateKey = toDateKey(date);
+		const eventsForDate = getVisibleCalendarEventsByDateKey(state.events, dateKey, filters);
+		for (const eventEntry of eventsForDate) {
+			upcoming.push({
+				date,
+				eventEntry,
+			});
+		}
+	}
+
+	if (!upcoming.length) {
+		const emptyItem = document.createElement("li");
+		emptyItem.className = "event-empty";
+		emptyItem.textContent = "No upcoming events in the next 7 days.";
+		ui.upcomingList.append(emptyItem);
+		return;
+	}
+
+	for (const entry of upcoming) {
+		const item = document.createElement("li");
+		item.className = "calendar-upcoming-item";
+		item.classList.toggle("is-completed", entry.eventEntry.completed);
+
+		const title = document.createElement("span");
+		title.className = "calendar-upcoming-title";
+		title.textContent = entry.eventEntry.title;
+
+		const meta = document.createElement("small");
+		meta.className = "calendar-upcoming-meta";
+		meta.textContent = `${formatCalendarShortDate(entry.date)} | ${formatCalendarEventMeta(entry.eventEntry)}`;
+
+		item.append(title, meta);
+		ui.upcomingList.append(item);
+	}
+}
+
 function submitCalendarEvent(state, ui) {
 	const title = ui.eventInput.value.trim();
 	if (!title) {
+		setCalendarMessage(ui, "Please type a title.", true);
 		return;
 	}
 
@@ -348,16 +509,28 @@ function submitCalendarEvent(state, ui) {
 		dateKey: normalizeCalendarDateKey(ui.eventDateInput.value, state.selectedDateKey),
 		time: ui.eventTimeInput.value,
 		category: ui.eventCategoryInput.value,
+		recurrence: ui.eventRecurrenceInput.value,
 	});
 
-	// Samme skjema brukes både for nye events og redigering av eksisterende.
-	if (state.editingEventId === null) {
+	const conflict = findCalendarTimeConflict(state.events, draft, state.editingEventId);
+	if (conflict) {
+		const conflictDate = formatCalendarLongDate(fromDateKey(draft.dateKey));
+		setCalendarMessage(ui, `Time conflict with \"${conflict.title}\" on ${conflictDate}.`, true);
+		return;
+	}
+
+	clearCalendarMessage(ui);
+	const isNew = state.editingEventId === null;
+
+	// Samme skjema brukes bade for nye events og redigering av eksisterende.
+	if (isNew) {
 		addCalendarEvent(state, draft);
 	} else {
 		updateCalendarEvent(state, state.editingEventId, draft);
 	}
 
 	cancelCalendarEventEdit(state, ui);
+	setCalendarMessage(ui, isNew ? "Event added." : "Event updated.");
 }
 
 function addCalendarEvent(state, draft) {
@@ -367,6 +540,8 @@ function addCalendarEvent(state, draft) {
 		title: draft.title,
 		time: draft.time,
 		category: draft.category,
+		recurrence: draft.recurrence,
+		completed: false,
 	};
 
 	state.nextEventId += 1;
@@ -386,6 +561,7 @@ function updateCalendarEvent(state, eventId, draft) {
 		title: draft.title,
 		time: draft.time,
 		category: draft.category,
+		recurrence: draft.recurrence,
 	};
 
 	saveCalendarEvents(state.events);
@@ -402,6 +578,7 @@ function startCalendarEventEdit(state, ui, eventId) {
 	ui.eventDateInput.value = eventEntry.dateKey;
 	ui.eventTimeInput.value = eventEntry.time;
 	ui.eventCategoryInput.value = eventEntry.category;
+	ui.eventRecurrenceInput.value = eventEntry.recurrence;
 	ui.eventInput.focus();
 }
 
@@ -414,6 +591,7 @@ function resetCalendarEventForm(ui, selectedDateKey) {
 	ui.eventForm.reset();
 	ui.eventDateInput.value = selectedDateKey;
 	ui.eventCategoryInput.value = "general";
+	ui.eventRecurrenceInput.value = "none";
 }
 
 function removeCalendarEvent(state, eventId) {
@@ -425,20 +603,55 @@ function removeCalendarEvent(state, eventId) {
 	saveCalendarEvents(state.events);
 }
 
-function getVisibleCalendarEventsByDateKey(events, dateKey, filterCategory) {
-	const eventsForDate = getCalendarEventsByDateKey(events, dateKey);
-	if (filterCategory === "all") {
-		return eventsForDate;
+function toggleCalendarEventCompleted(state, eventId) {
+	const eventEntry = state.events.find((entry) => entry.id === eventId);
+	if (!eventEntry) {
+		return;
 	}
 
-	return eventsForDate.filter((entry) => entry.category === filterCategory);
+	eventEntry.completed = !eventEntry.completed;
+	saveCalendarEvents(state.events);
+}
+
+function createCalendarFilters(state) {
+	return {
+		category: normalizeCalendarFilterCategory(state.filterCategory),
+		searchQuery: typeof state.searchQuery === "string" ? state.searchQuery.trim().toLowerCase() : "",
+		showCompleted: Boolean(state.showCompleted),
+	};
+}
+
+function getVisibleCalendarEventsByDateKey(events, dateKey, filters) {
+	const activeFilters = {
+		category: filters && filters.category ? filters.category : "all",
+		searchQuery: filters && typeof filters.searchQuery === "string"
+			? filters.searchQuery.trim().toLowerCase()
+			: "",
+		showCompleted: !filters || filters.showCompleted !== false,
+	};
+
+	let result = getCalendarEventsByDateKey(events, dateKey);
+
+	if (activeFilters.category !== "all") {
+		result = result.filter((entry) => entry.category === activeFilters.category);
+	}
+
+	if (activeFilters.searchQuery) {
+		result = result.filter((entry) => entry.title.toLowerCase().includes(activeFilters.searchQuery));
+	}
+
+	if (!activeFilters.showCompleted) {
+		result = result.filter((entry) => !entry.completed);
+	}
+
+	return result;
 }
 
 function getCalendarEventsByDateKey(events, dateKey) {
 	return events
-		.filter((entry) => entry.dateKey === dateKey)
+		.filter((entry) => eventOccursOnDate(entry, dateKey))
 		.sort((first, second) => {
-			// Sorter først på tid, legg tidløse events etterpå, og bruk id for stabil rekkefølge.
+			// Sorter pa tid, hold apne events foran ferdige, og bruk id for stabil rekkefolge.
 			if (first.time && second.time && first.time !== second.time) {
 				return first.time.localeCompare(second.time);
 			}
@@ -451,12 +664,43 @@ function getCalendarEventsByDateKey(events, dateKey) {
 				return 1;
 			}
 
+			if (first.completed !== second.completed) {
+				return first.completed ? 1 : -1;
+			}
+
 			return first.id - second.id;
 		});
 }
 
-// Ved lasting normaliseres data slik at gamle lagrede events fortsatt virker
-// selv om felter mangler (for eksempel kategori eller tid).
+function eventOccursOnDate(entry, dateKey) {
+	if (typeof entry !== "object" || typeof entry.dateKey !== "string") {
+		return false;
+	}
+
+	if (dateKey < entry.dateKey) {
+		return false;
+	}
+
+	if (entry.recurrence === "daily") {
+		return true;
+	}
+
+	if (entry.recurrence === "weekly") {
+		const startDate = fromDateKey(entry.dateKey);
+		const targetDate = fromDateKey(dateKey);
+		return startDate.getDay() === targetDate.getDay();
+	}
+
+	if (entry.recurrence === "monthly") {
+		const startDate = fromDateKey(entry.dateKey);
+		const targetDate = fromDateKey(dateKey);
+		return startDate.getDate() === targetDate.getDate();
+	}
+
+	return entry.dateKey === dateKey;
+}
+
+// Ved lasting normaliseres data slik at gamle lagrede events fortsatt virker.
 function loadCalendarEvents() {
 	try {
 		const raw = localStorage.getItem(CALENDAR_STORAGE_KEY);
@@ -505,10 +749,12 @@ function normalizeCalendarEvent(entry) {
 
 	return {
 		id,
-		dateKey: entry.dateKey,
+		dateKey: normalizeCalendarDateKey(entry.dateKey, toDateKey(stripTimeFromDate(new Date()))),
 		title,
 		time: normalizeCalendarTime(entry.time),
 		category: normalizeCalendarCategory(entry.category),
+		recurrence: normalizeCalendarRecurrence(entry.recurrence),
+		completed: Boolean(entry.completed),
 	};
 }
 
@@ -518,6 +764,7 @@ function sanitizeCalendarEventDraft(draft) {
 		dateKey: draft.dateKey,
 		time: normalizeCalendarTime(draft.time),
 		category: normalizeCalendarCategory(draft.category),
+		recurrence: normalizeCalendarRecurrence(draft.recurrence),
 	};
 }
 
@@ -531,7 +778,7 @@ function normalizeCalendarDateKey(value, fallbackDateKey) {
 		return fallbackDateKey;
 	}
 
-	// Normaliser via Date for å få konsekvent YYYY-MM-DD format.
+	// Normaliser via Date for konsekvent YYYY-MM-DD format.
 	const parsed = fromDateKey(candidate);
 	return toDateKey(parsed);
 }
@@ -574,12 +821,146 @@ function normalizeCalendarCategory(value) {
 	return key;
 }
 
+function normalizeCalendarRecurrence(value) {
+	if (typeof value !== "string") {
+		return "none";
+	}
+
+	const key = value.toLowerCase();
+	if (!CALENDAR_RECURRENCE_LABELS[key]) {
+		return "none";
+	}
+
+	return key;
+}
+
 function normalizeCalendarFilterCategory(value) {
 	if (value === "all") {
 		return "all";
 	}
 
 	return normalizeCalendarCategory(value);
+}
+
+function findCalendarTimeConflict(events, draft, editingEventId) {
+	if (!draft.time) {
+		return null;
+	}
+
+	for (const entry of events) {
+		if (entry.id === editingEventId) {
+			continue;
+		}
+
+		if (!entry.time || entry.time !== draft.time) {
+			continue;
+		}
+
+		if (eventOccursOnDate(entry, draft.dateKey)) {
+			return entry;
+		}
+	}
+
+	return null;
+}
+
+function exportCalendarEvents(events) {
+	const payload = {
+		version: CALENDAR_EXPORT_VERSION,
+		exportedAt: new Date().toISOString(),
+		events,
+	};
+
+	const json = JSON.stringify(payload, null, 2);
+	const blob = new Blob([json], { type: "application/json" });
+	const url = URL.createObjectURL(blob);
+	const todayKey = toDateKey(stripTimeFromDate(new Date()));
+
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = `calendar-backup-${todayKey}.json`;
+	document.body.append(link);
+	link.click();
+	link.remove();
+
+	setTimeout(() => {
+		URL.revokeObjectURL(url);
+	}, 0);
+}
+
+function importCalendarEventsFromFile(file, onDone) {
+	const reader = new FileReader();
+
+	reader.addEventListener("load", () => {
+		try {
+			const importedEvents = parseCalendarImportPayload(reader.result);
+			saveCalendarEvents(importedEvents);
+			onDone("", importedEvents);
+		} catch (error) {
+			const message = error instanceof Error ? error.message : "Could not parse import file.";
+			onDone(message, []);
+		}
+	});
+
+	reader.addEventListener("error", () => {
+		onDone("Could not read import file.", []);
+	});
+
+	reader.readAsText(file);
+}
+
+function parseCalendarImportPayload(raw) {
+	if (typeof raw !== "string") {
+		throw new Error("Import file is empty.");
+	}
+
+	const parsed = JSON.parse(raw);
+	let source = null;
+
+	if (Array.isArray(parsed)) {
+		source = parsed;
+	} else if (parsed && typeof parsed === "object" && Array.isArray(parsed.events)) {
+		source = parsed.events;
+	}
+
+	if (!source) {
+		throw new Error("Import must be a JSON array or an object with an events array.");
+	}
+
+	const importedEvents = source.map(normalizeCalendarEvent).filter(Boolean);
+	return importedEvents;
+}
+
+function setCalendarMessage(ui, message, isError = false) {
+	if (!message) {
+		clearCalendarMessage(ui);
+		return;
+	}
+
+	ui.formMessage.textContent = message;
+	ui.formMessage.classList.remove("is-hidden");
+	ui.formMessage.classList.toggle("is-error", isError);
+}
+
+function clearCalendarMessage(ui) {
+	ui.formMessage.textContent = "";
+	ui.formMessage.classList.add("is-hidden");
+	ui.formMessage.classList.remove("is-error");
+}
+
+function setCalendarStorageMessage(ui, message, isError = false) {
+	if (!message) {
+		clearCalendarStorageMessage(ui);
+		return;
+	}
+
+	ui.storageMessage.textContent = message;
+	ui.storageMessage.classList.toggle("is-error", isError);
+}
+
+function clearCalendarStorageMessage(ui) {
+	ui.storageMessage.textContent = "";
+	ui.storageMessage.classList.remove("is-error");
 }
 
 function getCalendarDatesForCurrentView(state) {
@@ -594,7 +975,7 @@ function getCalendarDatesForCurrentView(state) {
 		return buildSequentialDates(weekStart, 7);
 	}
 
-	// Måned vises alltid som et 6x7 rutenett for stabil layout mellom måneder.
+	// Maned vises alltid som et 6x7 rutenett for stabil layout.
 	const firstOfMonth = new Date(state.viewYear, state.viewMonth, 1);
 	const mondayStartOffset = (firstOfMonth.getDay() + 6) % 7;
 	const monthGridStart = new Date(state.viewYear, state.viewMonth, 1 - mondayStartOffset);
@@ -638,7 +1019,9 @@ function formatCalendarShortDate(date) {
 function formatCalendarEventMeta(eventEntry) {
 	const timeLabel = eventEntry.time || "No time";
 	const categoryLabel = CALENDAR_CATEGORY_LABELS[eventEntry.category] || CALENDAR_CATEGORY_LABELS.general;
-	return `Time: ${timeLabel} | Category: ${categoryLabel}`;
+	const recurrenceLabel = CALENDAR_RECURRENCE_LABELS[eventEntry.recurrence] || CALENDAR_RECURRENCE_LABELS.none;
+	const statusLabel = eventEntry.completed ? "Done" : "Open";
+	return `Time: ${timeLabel} | Category: ${categoryLabel} | Repeat: ${recurrenceLabel} | Status: ${statusLabel}`;
 }
 
 function getNextCalendarEventId(events) {
