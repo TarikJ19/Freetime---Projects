@@ -20,6 +20,7 @@ function createInitialState() {
 }
 
 function initCalculatorPage() {
+	// Hvis kalkulator-UI ikke finnes på siden, gjør vi ingenting.
 	const ui = {
 		expression: document.getElementById("calc-expression"),
 		result: document.getElementById("calc-result"),
@@ -34,6 +35,7 @@ function initCalculatorPage() {
 
 	const state = createInitialState();
 
+	// Event delegation: én lytter håndterer alle knappene i kalkulatorflaten.
 	ui.calculatorMain.addEventListener("click", (event) => {
 		const button = event.target.closest("button[data-action]");
 		if (!button) {
@@ -59,6 +61,7 @@ function initCalculatorPage() {
 	});
 
 	document.addEventListener("keydown", (event) => {
+		// Tastatursnarveier skal ikke trigges mens brukeren skriver i input-felt.
 		if (event.ctrlKey || event.altKey || event.metaKey) {
 			return;
 		}
@@ -211,6 +214,7 @@ function render(state, ui) {
 }
 
 function renderHistory(state, historyElement) {
+	// Vi renderer hele listen på nytt for å holde UI i synk med state.
 	historyElement.replaceChildren();
 
 	const orderedHistory = getOrderedHistory(state.history);
@@ -343,6 +347,7 @@ function appendToExpression(expression, value) {
 }
 
 function appendDigit(expression, digit) {
+	// Etter en lukket parentes betyr nytt tall implisitt multiplikasjon: ")2" -> ")*2".
 	if (!expression || expression === "0") {
 		return digit;
 	}
@@ -360,6 +365,7 @@ function appendDigit(expression, digit) {
 }
 
 function appendDecimal(expression) {
+	// Tillat kun ett desimalpunkt i det aktive tallet.
 	if (!expression) {
 		return "0.";
 	}
@@ -386,6 +392,7 @@ function appendDecimal(expression) {
 }
 
 function appendOperator(expression, operator) {
+	// Hvis uttrykket allerede slutter med operator, erstatter vi den siste.
 	if (!expression) {
 		return operator === "-" ? "-" : "";
 	}
@@ -403,6 +410,7 @@ function appendOperator(expression, operator) {
 }
 
 function appendParenthesis(expression, parenthesis) {
+	// "(" etter tall eller ")" tolkes som implisitt multiplikasjon.
 	if (parenthesis === "(") {
 		if (!expression) {
 			return "(";
@@ -488,6 +496,7 @@ function toggleSignOnCurrentNumber(expression) {
 }
 
 function applyUnaryAction(state, action) {
+	// Unary-knapper bruker aktivt uttrykk (eller forrige svar), så resultatet kan gjenbrukes direkte.
 	const source = getSourceExpression(state);
 	const value = evaluateExpression(source);
 	let result;
@@ -518,6 +527,7 @@ function applyUnaryAction(state, action) {
 }
 
 function applyScientificAction(state, fnName) {
+	// Trigonometriske funksjoner bruker JavaScript-standard: radianer.
 	const source = getSourceExpression(state);
 	const value = evaluateExpression(source);
 	let result;
@@ -548,6 +558,7 @@ function applyScientificAction(state, fnName) {
 }
 
 function saveResult(state, label, numericResult, reusableExpression) {
+	// Ett felles lagringspunkt holder expression, ANS og historikk konsistent.
 	const formatted = formatNumber(numericResult);
 	state.lastAnswer = numericResult;
 	state.expression = formatted;
@@ -561,6 +572,7 @@ function saveResult(state, label, numericResult, reusableExpression) {
 }
 
 function addHistoryItem(state, entry) {
+	// Nyeste element legges først, så historikken føles som en tidslinje.
 	const withId = {
 		id: state.nextHistoryId,
 		...entry,
@@ -590,6 +602,7 @@ function trimHistory(state) {
 }
 
 function getOrderedHistory(history) {
+	// Pinned vises alltid først, deretter sorteres resten på nyeste id.
 	return [...history].sort((first, second) => {
 		if (first.pinned !== second.pinned) {
 			return first.pinned ? -1 : 1;
@@ -600,6 +613,7 @@ function getOrderedHistory(history) {
 }
 
 function getSourceExpression(state) {
+	// Returner uttrykket som tekst, med fallback til ANS når feltet er tomt.
 	if (state.expression && state.expression !== "-") {
 		return state.expression;
 	}
@@ -612,6 +626,7 @@ function getSourceExpression(state) {
 }
 
 function resolveActiveValue(state) {
+	// Som getSourceExpression, men returnerer et ferdig evaluert tall for minneoperasjoner.
 	if (state.expression && state.expression !== "-") {
 		return evaluateExpression(state.expression);
 	}
@@ -646,6 +661,7 @@ function insertConstant(expression, constantName) {
 }
 
 function insertToken(expression, token) {
+	// Setter inn "*" automatisk ved implisitt multiplikasjon, f.eks. "2" + "pi" -> "2*pi".
 	if (!expression || expression === "0") {
 		return token;
 	}
@@ -717,6 +733,7 @@ function closeOpenParentheses(expression) {
 }
 
 function formatNumber(value) {
+	// Normaliser -0 til 0 og begrens støy fra flyttall med fast presisjon.
 	if (!Number.isFinite(value)) {
 		throw new Error("Calculation overflow");
 	}
@@ -726,6 +743,7 @@ function formatNumber(value) {
 }
 
 function findHistoryEntry(state, rawId) {
+	// Ryddig parsing av id fra dataset-verdier (alltid string i DOM).
 	const id = Number(rawId);
 	if (!id) {
 		return null;
@@ -807,6 +825,7 @@ function findLastMainOperator(expression) {
 }
 
 function canCloseParenthesis(expression) {
+	// ")" er bare gyldig når vi har flere åpne enn lukkede parenteser.
 	let openCount = 0;
 	let closeCount = 0;
 

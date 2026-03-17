@@ -29,6 +29,7 @@ const CALENDAR_RECURRENCE_LABELS = {
 };
 
 function initCalendarPage() {
+	// Samle alle DOM-referanser tidlig, slik at resten av koden kan bruke ett UI-objekt.
 	const ui = {
 		prevButton: document.getElementById("calendar-prev"),
 		nextButton: document.getElementById("calendar-next"),
@@ -84,6 +85,7 @@ function initCalendarPage() {
 		!ui.storageMessage ||
 		!ui.upcomingList
 	) {
+		// Hvis kalender-UI mangler elementer, avbryt stille pa denne siden.
 		return;
 	}
 
@@ -155,6 +157,7 @@ function initCalendarPage() {
 	});
 
 	ui.eventList.addEventListener("click", (event) => {
+		// Event delegation: alle event-radknapper styres via data-action.
 		const button = event.target.closest("button[data-action]");
 		if (!button) {
 			return;
@@ -233,6 +236,7 @@ function initCalendarPage() {
 }
 
 function createInitialCalendarState() {
+	// State holder baade visning (toolbar/grid) og datagrunnlag (events).
 	const today = stripTimeFromDate(new Date());
 	const events = loadCalendarEvents();
 
@@ -283,6 +287,7 @@ function selectCalendarDate(state, dateKey) {
 }
 
 function renderCalendarPage(state, ui) {
+	// En felles render-flyt holder UI i sync etter hver state-endring.
 	renderCalendarToolbarState(state, ui);
 	renderCalendarGrid(state, ui);
 	renderCalendarEventPanel(state, ui);
@@ -291,6 +296,7 @@ function renderCalendarPage(state, ui) {
 }
 
 function renderCalendarToolbarState(state, ui) {
+	// Speil state tilbake til kontroller, sa filter/visning alltid viser korrekt verdi.
 	for (const button of ui.viewButtons) {
 		const buttonMode = button.dataset.calendarView;
 		const isActive = buttonMode === state.viewMode;
@@ -319,6 +325,7 @@ function renderCalendarGrid(state, ui) {
 
 	for (const date of dates) {
 		const dateKey = toDateKey(date);
+		// Event-antall i hver celle respekterer aktive filtere (kategori/sok/fullfort).
 		const eventCount = getVisibleCalendarEventsByDateKey(state.events, dateKey, filters).length;
 
 		const dayButton = document.createElement("button");
@@ -398,6 +405,7 @@ function renderCalendarEventPanel(state, ui) {
 	}
 
 	for (const eventEntry of visibleEvents) {
+		// Bygg hver rad med hovedinnhold + handlingsknapper for tydelig struktur.
 		const item = document.createElement("li");
 		item.className = "calendar-event-item";
 		item.classList.toggle("is-completed", eventEntry.completed);
@@ -461,6 +469,7 @@ function renderCalendarUpcomingPanel(state, ui) {
 
 	for (const date of nextDates) {
 		const dateKey = toDateKey(date);
+		// Lag en flat upcoming-liste, uavhengig av hvilken dag eventen tilhorer.
 		const eventsForDate = getVisibleCalendarEventsByDateKey(state.events, dateKey, filters);
 		for (const eventEntry of eventsForDate) {
 			upcoming.push({
@@ -515,6 +524,7 @@ function submitCalendarEvent(state, ui) {
 	const conflict = findCalendarTimeConflict(state.events, draft, state.editingEventId);
 	if (conflict) {
 		const conflictDate = formatCalendarLongDate(fromDateKey(draft.dateKey));
+		// Vis konkret konflikt slik at brukeren vet hva som ma flyttes.
 		setCalendarMessage(ui, `Time conflict with \"${conflict.title}\" on ${conflictDate}.`, true);
 		return;
 	}
@@ -534,6 +544,7 @@ function submitCalendarEvent(state, ui) {
 }
 
 function addCalendarEvent(state, draft) {
+	// Bruk neste ledige id fra state for stabil lagring og redigering.
 	const entry = {
 		id: state.nextEventId,
 		dateKey: draft.dateKey,
@@ -555,6 +566,7 @@ function updateCalendarEvent(state, eventId, draft) {
 		return;
 	}
 
+	// Oppdater kun feltene som redigeres i skjema.
 	state.events[index] = {
 		...state.events[index],
 		dateKey: draft.dateKey,
@@ -573,6 +585,7 @@ function startCalendarEventEdit(state, ui, eventId) {
 		return;
 	}
 
+	// Forhandsfyll skjema nar eksisterende event settes i edit-modus.
 	state.editingEventId = eventEntry.id;
 	ui.eventInput.value = eventEntry.title;
 	ui.eventDateInput.value = eventEntry.dateKey;
@@ -599,6 +612,7 @@ function removeCalendarEvent(state, eventId) {
 		return;
 	}
 
+	// Fjern event ved id og lagre umiddelbart.
 	state.events = state.events.filter((entry) => entry.id !== eventId);
 	saveCalendarEvents(state.events);
 }
@@ -614,6 +628,7 @@ function toggleCalendarEventCompleted(state, eventId) {
 }
 
 function createCalendarFilters(state) {
+	// En normalisert filterpakke gjenbrukes av eventpanel, grid og upcoming-panel.
 	return {
 		category: normalizeCalendarFilterCategory(state.filterCategory),
 		searchQuery: typeof state.searchQuery === "string" ? state.searchQuery.trim().toLowerCase() : "",
@@ -622,6 +637,7 @@ function createCalendarFilters(state) {
 }
 
 function getVisibleCalendarEventsByDateKey(events, dateKey, filters) {
+	// Defensive defaults: funksjonen virker selv om filters er delvis eller mangler.
 	const activeFilters = {
 		category: filters && filters.category ? filters.category : "all",
 		searchQuery: filters && typeof filters.searchQuery === "string"
@@ -632,6 +648,7 @@ function getVisibleCalendarEventsByDateKey(events, dateKey, filters) {
 
 	let result = getCalendarEventsByDateKey(events, dateKey);
 
+	// Filterrekkefolge: dato -> kategori -> sok -> fullfort-status.
 	if (activeFilters.category !== "all") {
 		result = result.filter((entry) => entry.category === activeFilters.category);
 	}
@@ -686,12 +703,14 @@ function eventOccursOnDate(entry, dateKey) {
 	}
 
 	if (entry.recurrence === "weekly") {
+		// Weekly: match pa ukedag i stedet for dag-i-maned.
 		const startDate = fromDateKey(entry.dateKey);
 		const targetDate = fromDateKey(dateKey);
 		return startDate.getDay() === targetDate.getDay();
 	}
 
 	if (entry.recurrence === "monthly") {
+		// Monthly: match pa dagnummer i maneden.
 		const startDate = fromDateKey(entry.dateKey);
 		const targetDate = fromDateKey(dateKey);
 		return startDate.getDate() === targetDate.getDate();
@@ -721,6 +740,7 @@ function loadCalendarEvents() {
 
 function saveCalendarEvents(events) {
 	try {
+		// Hele listen lagres som JSON i en fast nøkkel.
 		localStorage.setItem(CALENDAR_STORAGE_KEY, JSON.stringify(events));
 	} catch {
 		// Nettleseren kan blokkere localStorage i private/strenge modus.
@@ -759,6 +779,7 @@ function normalizeCalendarEvent(entry) {
 }
 
 function sanitizeCalendarEventDraft(draft) {
+	// Rens/skalerer alle skjema-felt før konflikt- og lagringslogikk.
 	return {
 		title: draft.title,
 		dateKey: draft.dateKey,
@@ -848,6 +869,7 @@ function findCalendarTimeConflict(events, draft, editingEventId) {
 	}
 
 	for (const entry of events) {
+		// Under redigering ignoreres eventen som redigeres.
 		if (entry.id === editingEventId) {
 			continue;
 		}
@@ -865,6 +887,7 @@ function findCalendarTimeConflict(events, draft, editingEventId) {
 }
 
 function exportCalendarEvents(events) {
+	// Versjonert eksportformat gir bedre bakoverkompatibilitet over tid.
 	const payload = {
 		version: CALENDAR_EXPORT_VERSION,
 		exportedAt: new Date().toISOString(),
@@ -884,6 +907,7 @@ function exportCalendarEvents(events) {
 	link.remove();
 
 	setTimeout(() => {
+		// Frigi blob-url etter trigger for a unnga minnelekkasje.
 		URL.revokeObjectURL(url);
 	}, 0);
 }
@@ -893,6 +917,7 @@ function importCalendarEventsFromFile(file, onDone) {
 
 	reader.addEventListener("load", () => {
 		try {
+			// Parse + normaliser alt innhold før state oppdateres.
 			const importedEvents = parseCalendarImportPayload(reader.result);
 			saveCalendarEvents(importedEvents);
 			onDone("", importedEvents);
@@ -914,6 +939,7 @@ function parseCalendarImportPayload(raw) {
 		throw new Error("Import file is empty.");
 	}
 
+	// Stott baade ren array og objekt med events-felt.
 	const parsed = JSON.parse(raw);
 	let source = null;
 
@@ -983,6 +1009,7 @@ function getCalendarDatesForCurrentView(state) {
 }
 
 function buildSequentialDates(startDate, count) {
+	// Lag en ny datoliste uten a mutere startDate-objektet.
 	const dates = [];
 
 	for (let index = 0; index < count; index += 1) {
@@ -993,6 +1020,7 @@ function buildSequentialDates(startDate, count) {
 }
 
 function startOfWeekMonday(date) {
+	// Konverter JS (sondag=0) til mandagsbasert uke-start.
 	const offset = (date.getDay() + 6) % 7;
 	return new Date(date.getFullYear(), date.getMonth(), date.getDate() - offset);
 }
@@ -1003,6 +1031,7 @@ function formatCalendarHeaderTitle(state, dates) {
 	}
 
 	if (state.viewMode === "week") {
+		// Ukevisning bruker et kort datointervall som overskrift.
 		const start = dates[0];
 		const end = dates[dates.length - 1];
 		return `Week: ${formatCalendarShortDate(start)} - ${formatCalendarShortDate(end)}`;
@@ -1025,6 +1054,7 @@ function formatCalendarEventMeta(eventEntry) {
 }
 
 function getNextCalendarEventId(events) {
+	// Finn hoyeste eksisterende id og returner neste ledige.
 	let maxId = 0;
 
 	for (const entry of events) {

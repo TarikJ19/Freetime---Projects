@@ -38,6 +38,8 @@ These badges are now visible on the homepage and each project page.
 - `script.js` - Legacy pointer file kept for history/transition
 - `script.py` - Python reference calculator engine for reviewing the same expression logic outside the browser
 - `server.js` - Simple local Node.js server for running the site on localhost
+- `smoke-test.js` - Combined smoke tests for calculator and calendar logic
+- `package.json` - Optional npm scripts for local server and smoke tests
 - `styles.css` - Shared design system used by all pages
 - `assets/previews/calculator-preview.svg` - Visual preview image for implemented calculator milestone
 
@@ -74,6 +76,25 @@ node server.js
 ```
 
 Then open `http://localhost:3000`.
+
+### Option 5
+
+Run all smoke tests (calculator + calendar):
+
+```bash
+node smoke-test.js
+```
+
+### Optional npm scripts
+
+If you prefer npm commands:
+
+```bash
+npm test
+npm start
+```
+
+`npm test` runs `node smoke-test.js` and `npm start` runs `node server.js`.
 
 ## Optional tools
 

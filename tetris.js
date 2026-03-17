@@ -12,6 +12,7 @@ function initTetrisPage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+	// Init kjøres kun på spillsiden, så skriptet er trygt å laste globalt.
 	if (document.body.classList.contains("page-game")) {
 		initTetrisPage();
 	}
