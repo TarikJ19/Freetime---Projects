@@ -13,7 +13,7 @@
 			<div class="header-copy">
 				<div class="project-meta">
 					<p class="eyebrow">Project 2</p>
-					<span class="status-badge" data-status="planning">Planning</span>
+					<span class="status-badge" data-status="in-progress">In Progress</span>
 				</div>
 				<h1>Advanced Calendar</h1>
 				<p class="intro">A calendar project designed to move beyond a basic date grid and help organize time, events, and planning with more structure.</p>
@@ -45,8 +45,8 @@
 
 				<article class="content-card">
 					<p class="card-kicker">Status</p>
-					<h3>Currently in planning</h3>
-					<p>The page structure is ready first. From here, the project can grow into a fuller calendar layout before event handling and schedule logic are added.</p>
+					<h3>First functional version</h3>
+					<p>Month/week/day switching, category filter, local event storage, and simple event editing are now active. The next step is richer planning flow.</p>
 				</article>
 			</div>
 		</section>
@@ -54,19 +54,38 @@
 		<section class="section">
 			<div class="section-heading">
 				<p class="section-label">Layout preview</p>
-				<h2>Calendar interface shell (HTML only)</h2>
-				<p>This shows the page architecture for month navigation, event listing, and details before functionality is added.</p>
+				<h2>Calendar interface (first functional version)</h2>
+				<p>This view now supports month/week/day modes, category filtering, and browser-saved events with category/time metadata.</p>
 			</div>
 
 			<div class="calendar-shell">
 				<section class="content-card calendar-main" aria-label="Calendar month layout preview">
 					<header class="calendar-header">
-						<button type="button">Previous</button>
-						<h3>March 2026</h3>
-						<button type="button">Next</button>
+						<button type="button" id="calendar-prev" aria-label="Go to previous month">Previous</button>
+						<h3 id="calendar-month-title">March 2026</h3>
+						<button type="button" id="calendar-next" aria-label="Go to next month">Next</button>
 					</header>
 
-					<div class="calendar-weekdays" aria-hidden="true">
+					<div class="calendar-toolbar" aria-label="Calendar controls">
+						<div class="calendar-view-switch" role="group" aria-label="View mode">
+							<button type="button" data-calendar-view="month" aria-pressed="true">Month</button>
+							<button type="button" data-calendar-view="week" aria-pressed="false">Week</button>
+							<button type="button" data-calendar-view="day" aria-pressed="false">Day</button>
+						</div>
+
+						<div class="calendar-filter">
+							<label for="calendar-filter-category">Filter</label>
+							<select id="calendar-filter-category" name="calendarFilterCategory">
+								<option value="all">All categories</option>
+								<option value="general">General</option>
+								<option value="work">Work</option>
+								<option value="personal">Personal</option>
+								<option value="study">Study</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="calendar-weekdays" id="calendar-weekdays" aria-hidden="true">
 						<p>Mon</p>
 						<p>Tue</p>
 						<p>Wed</p>
@@ -76,67 +95,49 @@
 						<p>Sun</p>
 					</div>
 
-					<!-- Kalenderen vises med 6 uker for stabil layout, selv i maneder som spenner over to maneder. -->
-					<!-- Dager med klassen "muted" er visning av forrige/neste maned for a holde 7x6-rutenettet komplett. -->
-					<div class="calendar-grid" aria-hidden="true">
-						<article class="day-cell muted"><p>24</p></article>
-						<article class="day-cell muted"><p>25</p></article>
-						<article class="day-cell muted"><p>26</p></article>
-						<article class="day-cell muted"><p>27</p></article>
-						<article class="day-cell muted"><p>28</p></article>
-						<article class="day-cell"><p>1</p></article>
-						<article class="day-cell"><p>2</p></article>
-
-						<article class="day-cell"><p>3</p></article>
-						<article class="day-cell"><p>4</p></article>
-						<article class="day-cell has-event"><p>5</p><span>Team sync</span></article>
-						<article class="day-cell"><p>6</p></article>
-						<article class="day-cell"><p>7</p></article>
-						<article class="day-cell"><p>8</p></article>
-						<article class="day-cell"><p>9</p></article>
-
-						<article class="day-cell"><p>10</p></article>
-						<article class="day-cell"><p>11</p></article>
-						<article class="day-cell"><p>12</p></article>
-						<article class="day-cell has-event"><p>13</p><span>Deadline</span></article>
-						<article class="day-cell"><p>14</p></article>
-						<article class="day-cell"><p>15</p></article>
-						<article class="day-cell"><p>16</p></article>
-
-						<article class="day-cell"><p>17</p></article>
-						<article class="day-cell"><p>18</p></article>
-						<article class="day-cell"><p>19</p></article>
-						<article class="day-cell"><p>20</p></article>
-						<article class="day-cell"><p>21</p></article>
-						<article class="day-cell"><p>22</p></article>
-						<article class="day-cell"><p>23</p></article>
-
-						<article class="day-cell"><p>24</p></article>
-						<article class="day-cell has-event"><p>25</p><span>Design review</span></article>
-						<article class="day-cell"><p>26</p></article>
-						<article class="day-cell"><p>27</p></article>
-						<article class="day-cell"><p>28</p></article>
-						<article class="day-cell"><p>29</p></article>
-						<article class="day-cell"><p>30</p></article>
-
-						<article class="day-cell"><p>31</p></article>
-						<article class="day-cell muted"><p>1</p></article>
-						<article class="day-cell muted"><p>2</p></article>
-						<article class="day-cell muted"><p>3</p></article>
-						<article class="day-cell muted"><p>4</p></article>
-						<article class="day-cell muted"><p>5</p></article>
-						<article class="day-cell muted"><p>6</p></article>
-					</div>
+					<!-- Kalenderen rendres av calendar.js i month/week/day-visning. -->
+					<div class="calendar-grid" id="calendar-grid" aria-live="polite"></div>
 				</section>
 
-				<aside class="content-card panel-stack">
+				<aside class="content-card panel-stack calendar-panel">
 					<h3>Event detail panel</h3>
-					<p>Selecting a date will eventually show full event details here.</p>
-					<ul class="detail-list">
-						<li>Date and title</li>
-						<li>Time range and location</li>
-						<li>Notes and category tags</li>
+					<p id="calendar-selected-date">Select a date to view events.</p>
+
+					<form id="calendar-event-form" class="calendar-form">
+						<label for="calendar-event-input">New event title</label>
+						<input id="calendar-event-input" name="eventTitle" type="text" maxlength="70" placeholder="e.g. Team meeting at 14:00" required>
+
+						<label for="calendar-event-date">Date</label>
+						<input id="calendar-event-date" name="eventDate" type="date" required>
+
+						<div class="calendar-form-row">
+							<div class="calendar-field">
+								<label for="calendar-event-time">Time (optional)</label>
+								<input id="calendar-event-time" name="eventTime" type="time">
+							</div>
+
+							<div class="calendar-field">
+								<label for="calendar-event-category">Category</label>
+								<select id="calendar-event-category" name="eventCategory">
+									<option value="general">General</option>
+									<option value="work">Work</option>
+									<option value="personal">Personal</option>
+									<option value="study">Study</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="calendar-form-actions">
+							<button type="submit" id="calendar-event-submit">Add event</button>
+							<button type="button" id="calendar-event-cancel" class="calendar-event-cancel is-hidden">Cancel edit</button>
+						</div>
+					</form>
+
+					<ul id="calendar-event-list" class="calendar-event-list" aria-live="polite">
+						<li class="event-empty">No events for this day yet.</li>
 					</ul>
+
+					<p class="history-note">Events are saved in your browser storage, so they stay after refresh.</p>
 				</aside>
 			</div>
 		</section>
@@ -187,5 +188,6 @@
 			</div>
 		</div>
 	</footer>
+	<script src="calendar.js" defer></script>
 </body>
 </html>

@@ -10,7 +10,7 @@ Portfolio-style project collection focused on three browser projects that are be
 
 - **Project 2: Advanced Calendar**
   - Goal: Build a structured calendar with richer date/event views.
-  - Current stage: Planning.
+  - Current stage: In Progress (month/week/day views, category filter, browser-saved events, and basic event editing are live).
 
 - **Project 3: Tetris Game**
   - Goal: Build a browser Tetris with clean controls, scoring, and line-clear logic.
@@ -23,7 +23,7 @@ These badges are now visible on the homepage and each project page.
 | Project | Badge |
 | --- | --- |
 | Project 1: Advanced Calculator | In Progress |
-| Project 2: Advanced Calendar | Planning |
+| Project 2: Advanced Calendar | In Progress |
 | Project 3: Tetris Game | Planning |
 
 ## Repository structure
@@ -32,7 +32,10 @@ These badges are now visible on the homepage and each project page.
 - `project1.html` - Advanced Calculator page
 - `project2.html` - Advanced Calendar page
 - `project3.html` - Tetris Game page
-- `script.js` - Browser interactivity, currently used by the calculator page
+- `calculator.js` - Dedicated JavaScript logic for Project 1 (calculator)
+- `calendar.js` - Dedicated JavaScript logic for Project 2 (calendar)
+- `tetris.js` - Dedicated JavaScript entry point for Project 3 (Tetris)
+- `script.js` - Legacy pointer file kept for history/transition
 - `script.py` - Python reference calculator engine for reviewing the same expression logic outside the browser
 - `server.js` - Simple local Node.js server for running the site on localhost
 - `styles.css` - Shared design system used by all pages
@@ -89,6 +92,15 @@ python script.py --action sqrt "81"
 python script.py --action log "1000"
 ```
 
+## Project 2 mini milestone plan
+
+- [x] M1: Month navigation (Previous/Next) and current month title
+- [x] M2: Date selection and clear visual markers (today + selected date)
+- [x] M3: Event list with add/remove actions for selected day
+- [x] M4: Event persistence using array state + localStorage
+- [x] M5: Event metadata (time/category) and edit flow
+- [x] M6: Week view / day view and filter controls
+
 ## Visual preview (implemented milestone)
 
 ![Calculator preview](assets/previews/calculator-preview.svg)
@@ -109,6 +121,12 @@ python script.py --action log "1000"
 - 2026-03-17
   - Calculator functionality extended and simplified for beginner-friendly flow.
   - History controls now include pin, clear, load, and single-entry remove.
+  - JavaScript codebase split by project (`calculator.js`, `calendar.js`, `tetris.js`) to reduce monolithic complexity.
+  - Calendar now supports Previous/Next month navigation, day selection, and today marker.
+  - Calendar now supports month/week/day mode and category filter controls.
+  - Calendar events now support add/remove, time/category metadata, and edit flow.
+  - Calendar events persist in localStorage.
+  - Project 2 status moved from Planning to In Progress.
   - Status badges added across homepage and project pages.
   - Visual preview image added for calculator milestone.
   - Node.js local server included (`server.js`) for localhost workflow.

@@ -20,7 +20,6 @@ def format_number(value: float) -> str:
 
 
 def close_open_parentheses(expression: str) -> str:
-    # Tell åpne parenteser. Resten lukkes automatisk til slutt.
     depth = 0
 
     for character in expression:
@@ -35,12 +34,10 @@ def close_open_parentheses(expression: str) -> str:
 
 
 def evaluate_expression(expression: str) -> float:
-    # Fjern mellomrom for å gjøre sjekk og utregning enklere.
     compact = expression.replace(" ", "")
     if not compact:
         raise CalculatorError("Type an expression first")
 
-    # Tillat bare kalkulatortegn: sifre, operatorer, punktum og parenteser.
     if not ALLOWED_EXPRESSION.fullmatch(compact):
         raise CalculatorError("Only numbers and + - * / ( ) are allowed")
 
