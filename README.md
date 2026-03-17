@@ -61,7 +61,7 @@ This repository is a place for me to:
 If you’d like to connect:
 
 - GitHub: (this profile)
-- LinkedIn: _add your link here_
+- LinkedIn: (https://www.linkedin.com/in/tarik-j-51a341249/)
 - Email: _add your email here_
 
 ---
