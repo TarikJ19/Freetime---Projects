@@ -51,6 +51,14 @@ section("Reset + spawn");
 E.resetTetrisState(state, C);
 assert("Active piece finnes", Boolean(state.activePiece));
 assert("Next piece finnes", Boolean(state.nextPiece));
+assert("7-bag finnes i state", Array.isArray(state.pieceBag));
+assert("7-bag har 5 igjen etter active+next", state.pieceBag.length === 5);
+
+const firstBagNames = [state.activePiece.name, state.nextPiece.name].concat(state.pieceBag.map((piece) => piece.name));
+const uniqueFirstBagNames = new Set(firstBagNames);
+assert("Forste bag har totalt 7 brikker", firstBagNames.length === 7);
+assert("Forste bag inneholder 7 unike brikker", uniqueFirstBagNames.size === 7);
+
 assert("Running starter som false", state.running === false);
 assert("Game over starter som false", state.gameOver === false);
 assert("Ghost preview starter pa", state.showGhostPiece === true);

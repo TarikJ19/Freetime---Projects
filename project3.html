@@ -77,10 +77,18 @@
 					<p class="tetris-status" id="tetris-status">Status: Ready</p>
 					<div class="stat-list">
 						<p><span>Score</span><strong id="tetris-score">000000</strong></p>
+						<p><span>Best</span><strong id="tetris-best-score">000000</strong></p>
 						<p><span>Lines</span><strong id="tetris-lines">0</strong></p>
 						<p><span>Level</span><strong id="tetris-level">1</strong></p>
 						<p><span>Speed</span><strong id="tetris-speed">x1.00</strong></p>
 					</div>
+
+					<h3>Top 5</h3>
+					<ol class="tetris-highscore-list" id="tetris-highscore-list" aria-label="Top 5 high scores">
+						<li class="is-empty">No scores yet</li>
+					</ol>
+					<button type="button" id="tetris-clear-highscores" class="tetris-clear-highscores">Clear Top 5</button>
+					<p class="tetris-feedback" id="tetris-feedback" aria-live="polite"></p>
 
 					<h3>Hold piece</h3>
 					<div class="mini-grid" id="tetris-hold-piece" aria-label="Hold piece preview"></div>
@@ -93,7 +101,9 @@
 						<button type="button" id="tetris-start">Start</button>
 						<button type="button" id="tetris-pause">Pause / Resume</button>
 						<button type="button" id="tetris-hold">Hold</button>
-						<button type="button" id="tetris-ghost-toggle">Ghost: ON</button>					<button type="button" id="tetris-sound-toggle">Sound: ON</button>						<button type="button" id="tetris-hard-drop">Hard drop</button>
+						<button type="button" id="tetris-ghost-toggle">Ghost: ON</button>
+						<button type="button" id="tetris-sound-toggle">Sound: ON</button>
+						<button type="button" id="tetris-hard-drop">Hard drop</button>
 						<button type="button" id="tetris-reset">Reset</button>
 					</div>
 
@@ -103,7 +113,9 @@
 						<li><span class="keycap">Up</span> Rotate</li>
 						<li><span class="keycap">Down</span> Soft drop</li>
 						<li><span class="keycap">C</span> Hold</li>
-						<li><span class="keycap">G</span> Toggle ghost</li>					<li><span class="keycap">M</span> Toggle sound</li>						<li><span class="keycap">Enter</span> Hard drop</li>
+						<li><span class="keycap">G</span> Toggle ghost</li>
+						<li><span class="keycap">M</span> Toggle sound</li>
+						<li><span class="keycap">Enter</span> Hard drop</li>
 						<li><span class="keycap">Space / P</span> Pause / Resume</li>
 						<li><span class="keycap">R</span> Reset board</li>
 					</ul>

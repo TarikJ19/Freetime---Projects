@@ -3,37 +3,43 @@
 	"use strict";
 
 	function attachTetrisControls(ui, handlers) {
-		if (ui.startButton) {
-			ui.startButton.addEventListener("click", handlers.start);
+		function attachClick(buttonElement, handler) {
+			// Samme sikkerhetssjekk for alle knapper: element ma finnes, handler ma vaere funksjon.
+			if (buttonElement && typeof handler === "function") {
+				buttonElement.addEventListener("click", handler);
+			}
 		}
 
-		if (ui.pauseButton) {
-			ui.pauseButton.addEventListener("click", handlers.pause);
-		}
+		attachClick(ui.startButton, handlers.start);
+		attachClick(ui.pauseButton, handlers.pause);
+		attachClick(ui.resetButton, handlers.reset);
+		attachClick(ui.holdButton, handlers.hold);
+		attachClick(ui.hardDropButton, handlers.hardDrop);
+		attachClick(ui.ghostToggleButton, handlers.toggleGhost);
+		attachClick(ui.soundToggleButton, handlers.toggleSound);
+		attachClick(ui.clearHighscoresButton, handlers.clearHighscores);
+		attachClick(ui.restartButton, handlers.restart);
 
-		if (ui.resetButton) {
-			ui.resetButton.addEventListener("click", handlers.reset);
-		}
-
-		if (ui.holdButton) {
-			ui.holdButton.addEventListener("click", handlers.hold);
-		}
-
-		if (ui.hardDropButton) {
-			ui.hardDropButton.addEventListener("click", handlers.hardDrop);
-		}
-
-		if (ui.ghostToggleButton && typeof handlers.toggleGhost === "function") {
-			ui.ghostToggleButton.addEventListener("click", handlers.toggleGhost);
-		}
-
-		if (ui.soundToggleButton && typeof handlers.toggleSound === "function") {
-			ui.soundToggleButton.addEventListener("click", handlers.toggleSound);
-		}
-
-		if (ui.restartButton) {
-			ui.restartButton.addEventListener("click", handlers.restart);
-		}
+		// Samlet tastekart gjor det lettere a se alle bindings pa ett sted.
+		const keyActions = {
+			ArrowLeft: handlers.left,
+			ArrowRight: handlers.right,
+			ArrowDown: handlers.down,
+			ArrowUp: handlers.rotate,
+			Enter: handlers.hardDrop,
+			c: handlers.hold,
+			C: handlers.hold,
+			g: handlers.toggleGhost,
+			G: handlers.toggleGhost,
+			m: handlers.toggleSound,
+			M: handlers.toggleSound,
+			" ": handlers.pause,
+			Spacebar: handlers.pause,
+			p: handlers.pause,
+			P: handlers.pause,
+			r: handlers.reset,
+			R: handlers.reset,
+		};
 
 		document.addEventListener("keydown", (event) => {
 			if (event.ctrlKey || event.altKey || event.metaKey) {
@@ -46,62 +52,13 @@
 				return;
 			}
 
-			// Tastkartet er samlet her for a holde kontrollogikken lett a finne.
-			switch (event.key) {
-				case "ArrowLeft":
-					event.preventDefault();
-					handlers.left();
-					break;
-				case "ArrowRight":
-					event.preventDefault();
-					handlers.right();
-					break;
-				case "ArrowDown":
-					event.preventDefault();
-					handlers.down();
-					break;
-				case "ArrowUp":
-					event.preventDefault();
-					handlers.rotate();
-					break;
-				case "Enter":
-					event.preventDefault();
-					handlers.hardDrop();
-					break;
-				case "c":
-				case "C":
-					event.preventDefault();
-					handlers.hold();
-					break;
-				case "g":
-				case "G":
-					event.preventDefault();
-					if (typeof handlers.toggleGhost === "function") {
-						handlers.toggleGhost();
-					}
-					break;
-				case "m":
-				case "M":
-					event.preventDefault();
-					if (typeof handlers.toggleSound === "function") {
-						handlers.toggleSound();
-					}
-					break;
-				case " ":
-				case "Spacebar":
-				case "p":
-				case "P":
-					event.preventDefault();
-					handlers.pause();
-					break;
-				case "r":
-				case "R":
-					event.preventDefault();
-					handlers.reset();
-					break;
-				default:
-					break;
+			const action = keyActions[event.key];
+			if (typeof action !== "function") {
+				return;
 			}
+
+			event.preventDefault();
+			action();
 		});
 	}
 

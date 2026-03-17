@@ -279,6 +279,11 @@
 			ui.soundToggleButton.classList.toggle("is-off", !isSoundOn);
 			ui.soundToggleButton.setAttribute("aria-pressed", isSoundOn ? "true" : "false");
 		}
+
+		if (ui.clearHighscoresButton) {
+			const hasStoredScores = (Array.isArray(ui.highscoreValues) && ui.highscoreValues.length > 0) || (ui.bestScoreValue || 0) > 0;
+			ui.clearHighscoresButton.disabled = state.running || !hasStoredScores;
+		}
 	}
 
 	function renderOverlay(state, ui) {
@@ -291,7 +296,9 @@
 		ui.overlay.classList.toggle("is-hidden", !show);
 
 		if (show && ui.overlayText) {
-			ui.overlayText.textContent = `Final score: ${String(state.score).padStart(6, "0")} | Lines: ${state.lines}`;
+			// Marker ny rekord direkte i overlay for rask feedback etter game over.
+			const bestSuffix = ui.lastGameWasNewBest ? " | New best!" : "";
+			ui.overlayText.textContent = `Final score: ${String(state.score).padStart(6, "0")} | Lines: ${state.lines}${bestSuffix}`;
 		}
 	}
 

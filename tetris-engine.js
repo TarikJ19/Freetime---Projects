@@ -112,6 +112,37 @@
 		return config.PIECES.find((entry) => entry.name === pieceName) || null;
 	}
 
+	function shuffleTemplates(templates) {
+		const shuffled = templates.slice();
+
+		for (let index = shuffled.length - 1; index > 0; index -= 1) {
+			const randomIndex = Math.floor(Math.random() * (index + 1));
+			const temp = shuffled[index];
+			shuffled[index] = shuffled[randomIndex];
+			shuffled[randomIndex] = temp;
+		}
+
+		return shuffled;
+	}
+
+	function refillPieceBag(state, config) {
+		// 7-bag: en tilfeldig miks med naktig en av hver brikke.
+		state.pieceBag = shuffleTemplates(config.PIECES);
+	}
+
+	function drawPieceFromBag(state, config) {
+		if (!Array.isArray(state.pieceBag) || state.pieceBag.length === 0) {
+			refillPieceBag(state, config);
+		}
+
+		const template = state.pieceBag.pop();
+		if (!template) {
+			return getRandomPiece(config);
+		}
+
+		return createPieceFromTemplate(template, state.cols);
+	}
+
 	function buildDropIntervalMs(level, config) {
 		// Eksponentiell kurve gir jevnere fartsokning enn fast lineart steg.
 		const safeLevel = Math.max(1, Number(level) || 1);
@@ -127,6 +158,7 @@
 			board: createEmptyBoard(config.ROWS, config.COLS),
 			activePiece: null,
 			nextPiece: null,
+			pieceBag: [],
 			holdPiece: null,
 			hasUsedHoldThisTurn: false,
 			showGhostPiece: true,
@@ -143,12 +175,12 @@
 		// Look-ahead: nextPiece er allerede valgt fra forrige spawn,
 		// slik at spilleren alltid kan se neste brikke i panelet.
 		if (!state.nextPiece) {
-			state.nextPiece = getRandomPiece(config);
+			state.nextPiece = drawPieceFromBag(state, config);
 		}
 
 		state.activePiece = clonePiece(state.nextPiece);
 		centerPiece(state.activePiece, state.cols);
-		state.nextPiece = getRandomPiece(config);
+		state.nextPiece = drawPieceFromBag(state, config);
 		state.hasUsedHoldThisTurn = false;
 
 		if (!canPlacePiece(state.board, state.activePiece, state.rows, state.cols)) {
@@ -161,6 +193,7 @@
 		state.board = createEmptyBoard(state.rows, state.cols);
 		state.activePiece = null;
 		state.nextPiece = null;
+		state.pieceBag = [];
 		state.holdPiece = null;
 		state.hasUsedHoldThisTurn = false;
 		if (typeof state.showGhostPiece !== "boolean") {
@@ -236,9 +269,8 @@
 	}
 
 	function clearFilledLines(state) {
-		// To-pass-strategi: forste pass samler rad-indeksene fra det UENDREDE brettet.
-		// Disse brukes av render-laget til rad-spesifikk flash mot orginalbrettet.
-		// Andre pass gjor selve fjerningen (splice+unshift endrer indekser, derav to pass).
+		// Samle radindekser for fulle rader fra det uendrede brettet.
+		// Render-laget bruker disse for rad-spesifikk flash.
 		const clearedRows = [];
 		for (let row = 0; row < state.rows; row += 1) {
 			if (state.board[row].every((cell) => Boolean(cell))) {
@@ -246,15 +278,14 @@
 			}
 		}
 
-		// Andre pass: fjern fulle rader og legg tomme rader opp.
-		for (let row = state.rows - 1; row >= 0; row -= 1) {
-			if (!state.board[row].every((cell) => Boolean(cell))) {
-				continue;
-			}
+		// Fjern nederst-til-opp slik at indekser over ikke flytter seg feil.
+		for (let index = clearedRows.length - 1; index >= 0; index -= 1) {
+			state.board.splice(clearedRows[index], 1);
+		}
 
-			state.board.splice(row, 1);
+		// Legg inn tilsvarende antall tomme rader pa toppen.
+		for (let index = 0; index < clearedRows.length; index += 1) {
 			state.board.unshift(new Array(state.cols).fill(""));
-			row += 1;
 		}
 
 		return { cleared: clearedRows.length, clearedRows };

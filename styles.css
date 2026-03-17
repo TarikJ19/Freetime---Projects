@@ -1251,6 +1251,57 @@ main {
     margin-bottom: 0;
 }
 
+.tetris-highscore-list {
+    margin: -0.2rem 0 1rem;
+    padding: 0 0 0 1.2rem;
+    display: grid;
+    gap: 0.3rem;
+}
+
+.tetris-highscore-list li {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.tetris-highscore-list li.is-empty {
+    margin-left: -1.2rem;
+    list-style: none;
+    color: rgba(53, 39, 28, 0.65);
+}
+
+.tetris-clear-highscores {
+    margin: -0.3rem 0 1rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.tetris-clear-highscores:hover {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.tetris-clear-highscores:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tetris-feedback {
+    min-height: 1.1rem;
+    margin: -0.4rem 0 1rem;
+    color: #1f7a57;
+    font-size: 0.86rem;
+    opacity: 0;
+    transition: opacity 0.16s ease;
+}
+
+.tetris-feedback.is-visible {
+    opacity: 1;
+}
+
 .mini-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
