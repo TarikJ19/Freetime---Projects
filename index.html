@@ -3,17 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Freetime Projects</title>
+    <meta name="description" content="A portfolio homepage for my calculator, calendar, and beginner-friendly browser game projects.">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-<h1>Funtime projects</h1>
-<p>Here are some of my projects:</p>
+<body class="page-home">
+    <header class="site-header">
+        <div class="container header-layout">
+            <div class="header-copy">
+                <p class="eyebrow">Personal build archive</p>
+                <h1>Freetime Projects</h1>
+                <p class="intro">A small portfolio of projects I am building to improve range, sharpen problem-solving, and turn ideas into finished work.</p>
+            </div>
 
-<ul>
-    <li><a href="project1.html">Project 1</a></li>
-    <li><a href="project2.html">Project 2</a></li>
-    <li><a href="project3.html">Project 3</a></li>
-</ul>
+            <nav class="site-nav" aria-label="Primary">
+                <a class="nav-link" href="index.html" aria-current="page">Home</a>
+                <a class="nav-link" href="project1.html">Calculator</a>
+                <a class="nav-link" href="project2.html">Calendar</a>
+                <a class="nav-link" href="project3.html">Game</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-card">
+            <p class="section-label">Current direction</p>
+            <h2>Three projects, three different kinds of problems to solve.</h2>
+            <p>One focuses on calculation logic, one on date and planning structure, and one on game rules and movement. Together they make the portfolio broader than a single app type.</p>
+        </section>
+
+        <section class="section" id="projects">
+            <div class="section-heading">
+                <p class="section-label">Project lineup</p>
+                <h2>What each build is aiming to become</h2>
+                <p>Each page below starts as a structured concept page now, then grows into a full project as the design and functionality are added.</p>
+            </div>
+
+            <div class="card-grid">
+                <article class="content-card project-card-card">
+                    <a class="project-card-link" href="project1.html" aria-label="Open project 1: Advanced Calculator">
+                        <p class="card-kicker">Project 1</p>
+                        <h3>Advanced Calculator</h3>
+                        <p>An advanced calculator built to handle more than basic arithmetic, with room for cleaner input flow, memory tools, and more serious calculation features.</p>
+                        <ul class="detail-list">
+                            <li>Focus: strong logic, accuracy, and a polished calculator layout</li>
+                            <li>Planned scope: standard calculations, scientific tools, and quality-of-life actions</li>
+                        </ul>
+                        <p class="card-cta">Open project</p>
+                    </a>
+                </article>
+
+                <article class="content-card project-card-card">
+                    <a class="project-card-link" href="project2.html" aria-label="Open project 2: Advanced Calendar">
+                        <p class="card-kicker">Project 2</p>
+                        <h3>Advanced Calendar</h3>
+                        <p>An advanced calendar project focused on organizing dates, events, and schedules in a way that feels more useful than a plain month grid.</p>
+                        <ul class="detail-list">
+                            <li>Focus: date handling, planning structure, and cleaner event visibility</li>
+                            <li>Planned scope: monthly views, event details, and smarter organization ideas</li>
+                        </ul>
+                        <p class="card-cta">Open project</p>
+                    </a>
+                </article>
+
+                <article class="content-card project-card-card">
+                    <a class="project-card-link" href="project3.html" aria-label="Open project 3: Tetris Game">
+                        <p class="card-kicker">Project 3</p>
+                        <h3>Tetris Game</h3>
+                        <p>A browser Tetris project focused on falling pieces, rotation, row clearing, and steady game pacing that makes replaying addictive.</p>
+                        <ul class="detail-list">
+                            <li>Focus: game loop timing, collision checks, and line-clear rules</li>
+                            <li>Planned scope: responsive controls, score tracking, and increasing difficulty</li>
+                        </ul>
+                        <p class="card-cta">Open project</p>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="about">
+            <div class="split-layout">
+                <article class="content-card">
+                    <p class="section-label">About this site</p>
+                    <h2>A place to show progress, not just finished screenshots.</h2>
+                    <p>This homepage is meant to track projects from idea to polished build. The structure is being set first so every project page has a clear place for goals, features, and updates.</p>
+                </article>
+
+                <article class="content-card">
+                    <p class="section-label">What comes next</p>
+                    <h2>Design and functionality will stack on top of this structure.</h2>
+                    <ul class="detail-list">
+                        <li>Refine the visual styling across all pages</li>
+                        <li>Add project-specific sections as each build grows</li>
+                        <li>Introduce interactivity once the layout and content feel right</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-layout">
+            <div>
+                <p class="section-label">Contact</p>
+                <h2>Building in public, one project at a time.</h2>
+            </div>
+
+            <div class="footer-links">
+                <p><a href="#projects">See current projects</a></p>
+                <p><a href="https://www.linkedin.com/in/tarik-j-51a341249/">LinkedIn</a></p>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

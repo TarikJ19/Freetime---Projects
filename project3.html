@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tetris Game | Freetime Projects</title>
+	<meta name="description" content="Planning page for a browser Tetris game focused on tetromino movement, row clearing, scoring, and replay value.">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-game">
+	<header class="site-header">
+		<div class="container header-layout">
+			<div class="header-copy">
+				<p class="eyebrow">Project 3</p>
+				<h1>Tetris Game</h1>
+				<p class="intro">A browser-based Tetris project focused on clean movement, clear rules, and satisfying line-clearing gameplay.</p>
+			</div>
+
+			<nav class="site-nav" aria-label="Primary">
+				<a class="nav-link" href="index.html">Home</a>
+				<a class="nav-link" href="project1.html">Calculator</a>
+				<a class="nav-link" href="project2.html">Calendar</a>
+				<a class="nav-link" href="project3.html" aria-current="page">Game</a>
+			</nav>
+		</div>
+	</header>
+
+	<main class="container">
+		<section class="hero-card">
+			<p class="section-label">Overview</p>
+			<h2>A gameplay build centered on tetromino rules and line-clearing rhythm.</h2>
+			<p>This project is now a dedicated Tetris build, designed to practice board logic, rotation behavior, collision handling, and pacing that becomes more challenging over time.</p>
+		</section>
+
+		<section class="section">
+			<div class="split-layout">
+				<article class="content-card">
+					<p class="card-kicker">Purpose</p>
+					<h3>What this project should solve</h3>
+					<p>This build is meant to train core game logic skills through a well-defined ruleset: falling blocks, board boundaries, line clears, scoring, and game-over states.</p>
+				</article>
+
+				<article class="content-card">
+					<p class="card-kicker">Status</p>
+					<h3>Currently in planning</h3>
+					<p>The layout shell is now in place first. The next phase is wiring piece generation, movement controls, and row-clearing logic.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="section">
+			<div class="section-heading">
+				<p class="section-label">Layout preview</p>
+				<h2>Tetris interface shell (HTML only)</h2>
+				<p>This section mirrors the final game screen structure without JavaScript behavior yet.</p>
+			</div>
+
+			<div class="tetris-shell">
+				<section class="content-card tetris-stage" aria-label="Tetris board preview">
+					<div class="board-grid" aria-hidden="true">
+						<span class="cell filled-a"></span><span class="cell filled-a"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell filled-a"></span><span class="cell filled-a"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell filled-b"></span><span class="cell filled-b"></span><span class="cell filled-b"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell filled-b"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
+						<span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span>
+						<span class="cell filled-d"></span><span class="cell"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span>
+					</div>
+				</section>
+
+				<aside class="content-card panel-stack">
+					<h3>Game panel</h3>
+					<div class="stat-list">
+						<p><span>Score</span><strong>004200</strong></p>
+						<p><span>Lines</span><strong>18</strong></p>
+						<p><span>Level</span><strong>4</strong></p>
+					</div>
+
+					<h3>Next piece</h3>
+					<div class="mini-grid" aria-hidden="true">
+						<span></span><span></span><span class="filled-a"></span><span></span>
+						<span></span><span class="filled-a"></span><span class="filled-a"></span><span></span>
+						<span></span><span></span><span class="filled-a"></span><span></span>
+						<span></span><span></span><span></span><span></span>
+					</div>
+
+					<h3>Controls preview</h3>
+					<ul class="detail-list">
+						<li>Move: Left / Right arrows</li>
+						<li>Rotate: Up arrow</li>
+						<li>Soft drop: Down arrow</li>
+						<li>Pause: Space</li>
+					</ul>
+				</aside>
+			</div>
+		</section>
+
+		<section class="section">
+			<div class="section-heading">
+				<p class="section-label">Planned features</p>
+				<h2>What I want this Tetris build to include</h2>
+			</div>
+
+			<div class="card-grid">
+				<article class="content-card">
+					<h3>Piece handling</h3>
+					<p>Consistent tetromino spawn behavior, smooth movement, and predictable rotation rules.</p>
+				</article>
+
+				<article class="content-card">
+					<h3>Line clearing and speed</h3>
+					<p>Reliable row detection, score increments, and speed progression that scales by level.</p>
+				</article>
+
+				<article class="content-card">
+					<h3>Game feel and replay value</h3>
+					<p>Clear feedback, clean board readability, and enough challenge to make repeat runs fun.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="section">
+			<article class="content-card">
+				<p class="section-label">Why this build matters</p>
+				<h2>Tetris is simple to understand but hard to implement cleanly.</h2>
+				<p>It is a great project for practicing game loops, collision rules, rotating shapes, and state updates that need to stay fast and reliable while the pace increases.</p>
+			</article>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-layout">
+			<div>
+				<p class="section-label">Next link</p>
+				<h2>This set starts and ends at the homepage.</h2>
+			</div>
+
+			<div class="footer-links">
+				<p><a href="index.html">Back to homepage</a></p>
+				<p><a href="project1.html">Loop back to Advanced Calculator</a></p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>

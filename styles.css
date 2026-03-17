@@ -1,0 +1,548 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap");
+
+:root {
+    --text: #201912;
+    --muted: #5b4f44;
+    --line: rgba(46, 35, 28, 0.12);
+}
+
+body.page-home {
+    --page-accent: #c75930;
+    --page-wash: rgba(199, 89, 48, 0.18);
+}
+
+body.page-calculator {
+    --page-accent: #2a5f92;
+    --page-wash: rgba(42, 95, 146, 0.16);
+}
+
+body.page-calendar {
+    --page-accent: #1f7a57;
+    --page-wash: rgba(31, 122, 87, 0.17);
+}
+
+body.page-game {
+    --page-accent: #a95a19;
+    --page-wash: rgba(169, 90, 25, 0.16);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    line-height: 1.6;
+    font-family: "Manrope", "Trebuchet MS", sans-serif;
+    background:
+        radial-gradient(circle at top left, var(--page-wash), transparent 32%),
+        radial-gradient(circle at top right, rgba(29, 82, 92, 0.14), transparent 28%),
+        linear-gradient(180deg, #f8f2e8 0%, #efe2cf 100%);
+}
+
+a {
+    color: inherit;
+}
+
+.container {
+    width: min(1100px, calc(100% - 2rem));
+    margin: 0 auto;
+}
+
+.site-header {
+    padding: 2rem 0 1rem;
+}
+
+.header-layout {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.header-copy {
+    max-width: 42rem;
+}
+
+.eyebrow,
+.section-label,
+.card-kicker {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--page-accent);
+}
+
+h1,
+h2,
+h3 {
+    margin: 0 0 0.75rem;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-family: "Fraunces", Georgia, serif;
+}
+
+h1 {
+    font-size: clamp(2.8rem, 8vw, 5.5rem);
+}
+
+h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+h3 {
+    font-size: 1.35rem;
+}
+
+p {
+    margin: 0 0 1rem;
+}
+
+.intro,
+.hero-card p,
+.section-heading p,
+.content-card p,
+.detail-list {
+    color: var(--muted);
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-self: start;
+}
+
+.nav-link {
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 250, 241, 0.72);
+    box-shadow: 0 10px 20px rgba(35, 25, 18, 0.04);
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(31, 26, 22, 0.25);
+}
+
+.nav-link[aria-current="page"] {
+    color: #fff8ef;
+    background: var(--text);
+    border-color: var(--text);
+}
+
+.nav-link:focus-visible,
+.footer-links a:focus-visible,
+.content-card h3 a:focus-visible {
+    outline: 2px solid var(--page-accent);
+    outline-offset: 3px;
+}
+
+main {
+    padding-bottom: 2rem;
+}
+
+.hero-card,
+.content-card {
+    border: 1px solid rgba(53, 39, 28, 0.12);
+    border-radius: 28px;
+    background: rgba(255, 251, 244, 0.72);
+    box-shadow: 0 20px 48px rgba(52, 35, 23, 0.1);
+    backdrop-filter: blur(12px);
+}
+
+.hero-card {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 5px solid var(--page-accent);
+}
+
+.section {
+    padding-top: 1.5rem;
+}
+
+.section-heading {
+    max-width: 48rem;
+    margin-bottom: 1.25rem;
+}
+
+.section-heading p:last-child,
+.content-card p:last-child,
+.hero-card p:last-child,
+.detail-list:last-child {
+    margin-bottom: 0;
+}
+
+.card-grid,
+.split-layout {
+    display: grid;
+    gap: 1rem;
+}
+
+.content-card {
+    padding: 1.5rem;
+}
+
+.content-card h3 a {
+    text-decoration: none;
+}
+
+.content-card h3 a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--page-accent);
+    text-underline-offset: 0.18em;
+}
+
+.detail-list {
+    margin: 1rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.detail-list li + li {
+    margin-top: 0.6rem;
+}
+
+.project-card-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.project-card-link {
+    display: block;
+    height: 100%;
+    padding: 1.5rem;
+    text-decoration: none;
+    transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.project-card-link:hover,
+.project-card-link:focus-visible {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.62);
+}
+
+.project-card-link:focus-visible {
+    outline: 3px solid var(--page-accent);
+    outline-offset: -3px;
+}
+
+.project-card-link .detail-list {
+    margin-bottom: 1.2rem;
+}
+
+.card-cta {
+    margin: 0;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.card-cta::after {
+    content: " ->";
+    margin-left: 0.3rem;
+}
+
+.calculator-shell,
+.calendar-shell,
+.tetris-shell {
+    display: grid;
+    gap: 1rem;
+}
+
+.panel-stack h3 {
+    margin-top: 0;
+}
+
+.calc-display {
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(53, 39, 28, 0.14);
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.display-label {
+    margin-bottom: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--page-accent);
+}
+
+.display-value,
+.display-result {
+    margin-bottom: 0.8rem;
+    font-family: "Fraunces", Georgia, serif;
+    line-height: 1;
+}
+
+.display-value {
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+.display-result {
+    margin-bottom: 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.calc-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.calc-grid button,
+.calendar-header button {
+    padding: 0.65rem 0.5rem;
+    font: inherit;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.calc-grid button:hover,
+.calendar-header button:hover {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.calc-grid .action-key {
+    color: #fff8ef;
+    background: var(--text);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.calendar-header h3 {
+    margin: 0;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.45rem;
+}
+
+.calendar-weekdays {
+    margin-bottom: 0.45rem;
+}
+
+.calendar-weekdays p {
+    margin: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--page-accent);
+}
+
+.day-cell {
+    min-height: 70px;
+    padding: 0.45rem;
+    border: 1px solid rgba(53, 39, 28, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.64);
+}
+
+.day-cell p {
+    margin: 0;
+    font-weight: 700;
+}
+
+.day-cell span {
+    display: inline-block;
+    margin-top: 0.35rem;
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    background: rgba(31, 122, 87, 0.16);
+}
+
+.day-cell.muted {
+    opacity: 0.6;
+}
+
+.day-cell.has-event {
+    border-color: rgba(31, 122, 87, 0.45);
+}
+
+.tetris-stage {
+    display: flex;
+    justify-content: center;
+}
+
+.board-grid {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    width: min(100%, 340px);
+    gap: 0.2rem;
+    padding: 0.5rem;
+    border-radius: 14px;
+    background: rgba(33, 28, 24, 0.9);
+}
+
+.cell {
+    aspect-ratio: 1;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.filled-a {
+    background: #4bc3d4;
+}
+
+.filled-b {
+    background: #f08f3f;
+}
+
+.filled-c {
+    background: #6cb564;
+}
+
+.filled-d {
+    background: #d264c5;
+}
+
+.stat-list {
+    margin-bottom: 1.25rem;
+}
+
+.stat-list p {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0 0 0.45rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px dashed rgba(53, 39, 28, 0.16);
+}
+
+.stat-list p:last-child {
+    margin-bottom: 0;
+}
+
+.mini-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.2rem;
+    width: min(100%, 140px);
+    margin-bottom: 1.1rem;
+}
+
+.mini-grid span {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: rgba(33, 28, 24, 0.12);
+}
+
+.site-footer {
+    padding: 2rem 0 3rem;
+}
+
+.footer-layout {
+    display: grid;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 28px;
+    background: rgba(31, 26, 22, 0.92);
+    color: #fff8ef;
+    box-shadow: 0 20px 48px rgba(52, 35, 23, 0.16);
+}
+
+.footer-layout .section-label,
+.footer-layout p {
+    color: rgba(255, 248, 239, 0.82);
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    align-items: center;
+}
+
+.footer-links p {
+    margin: 0;
+}
+
+.footer-links a {
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 248, 239, 0.35);
+}
+
+.footer-links a:hover {
+    border-color: currentColor;
+}
+
+@media (min-width: 760px) {
+    .header-layout {
+        grid-template-columns: minmax(0, 1.3fr) auto;
+        align-items: end;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .split-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calculator-shell,
+    .tetris-shell {
+        grid-template-columns: minmax(0, 1.45fr) minmax(230px, 0.55fr);
+    }
+
+    .calendar-shell {
+        grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.6fr);
+    }
+
+    .footer-layout {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+    }
+}
+
+@media (max-width: 759px) {
+    .site-header {
+        padding-top: 1.25rem;
+    }
+
+    h1 {
+        line-height: 0.98;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: center;
+    }
+
+    .calc-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .calendar-weekdays p {
+        font-size: 0.7rem;
+    }
+
+    .day-cell {
+        min-height: 56px;
+    }
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Advanced Calendar | Freetime Projects</title>
+	<meta name="description" content="Planning page for an advanced calendar project with richer scheduling, event visibility, and structured date views.">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-calendar">
+	<header class="site-header">
+		<div class="container header-layout">
+			<div class="header-copy">
+				<p class="eyebrow">Project 2</p>
+				<h1>Advanced Calendar</h1>
+				<p class="intro">A calendar project designed to move beyond a basic date grid and help organize time, events, and planning with more structure.</p>
+			</div>
+
+			<nav class="site-nav" aria-label="Primary">
+				<a class="nav-link" href="index.html">Home</a>
+				<a class="nav-link" href="project1.html">Calculator</a>
+				<a class="nav-link" href="project2.html" aria-current="page">Calendar</a>
+				<a class="nav-link" href="project3.html">Game</a>
+			</nav>
+		</div>
+	</header>
+
+	<main class="container">
+		<section class="hero-card">
+			<p class="section-label">Overview</p>
+			<h2>A date-heavy build focused on organization and clear time-based views.</h2>
+			<p>The aim is to create a calendar that feels more helpful than a standard layout, with room for events, planning details, and views that make busy schedules easier to understand.</p>
+		</section>
+
+		<section class="section">
+			<div class="split-layout">
+				<article class="content-card">
+					<p class="card-kicker">Purpose</p>
+					<h3>What this project should solve</h3>
+					<p>This build is a way to practice layouts driven by structured information, repeated UI patterns, and the challenges that come with working around dates and time.</p>
+				</article>
+
+				<article class="content-card">
+					<p class="card-kicker">Status</p>
+					<h3>Currently in planning</h3>
+					<p>The page structure is ready first. From here, the project can grow into a fuller calendar layout before event handling and schedule logic are added.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="section">
+			<div class="section-heading">
+				<p class="section-label">Layout preview</p>
+				<h2>Calendar interface shell (HTML only)</h2>
+				<p>This shows the page architecture for month navigation, event listing, and details before functionality is added.</p>
+			</div>
+
+			<div class="calendar-shell">
+				<section class="content-card calendar-main" aria-label="Calendar month layout preview">
+					<header class="calendar-header">
+						<button type="button">Previous</button>
+						<h3>March 2026</h3>
+						<button type="button">Next</button>
+					</header>
+
+					<div class="calendar-weekdays" aria-hidden="true">
+						<p>Mon</p>
+						<p>Tue</p>
+						<p>Wed</p>
+						<p>Thu</p>
+						<p>Fri</p>
+						<p>Sat</p>
+						<p>Sun</p>
+					</div>
+
+					<div class="calendar-grid" aria-hidden="true">
+						<article class="day-cell muted"><p>24</p></article>
+						<article class="day-cell muted"><p>25</p></article>
+						<article class="day-cell muted"><p>26</p></article>
+						<article class="day-cell muted"><p>27</p></article>
+						<article class="day-cell muted"><p>28</p></article>
+						<article class="day-cell"><p>1</p></article>
+						<article class="day-cell"><p>2</p></article>
+
+						<article class="day-cell"><p>3</p></article>
+						<article class="day-cell"><p>4</p></article>
+						<article class="day-cell has-event"><p>5</p><span>Team sync</span></article>
+						<article class="day-cell"><p>6</p></article>
+						<article class="day-cell"><p>7</p></article>
+						<article class="day-cell"><p>8</p></article>
+						<article class="day-cell"><p>9</p></article>
+
+						<article class="day-cell"><p>10</p></article>
+						<article class="day-cell"><p>11</p></article>
+						<article class="day-cell"><p>12</p></article>
+						<article class="day-cell has-event"><p>13</p><span>Deadline</span></article>
+						<article class="day-cell"><p>14</p></article>
+						<article class="day-cell"><p>15</p></article>
+						<article class="day-cell"><p>16</p></article>
+
+						<article class="day-cell"><p>17</p></article>
+						<article class="day-cell"><p>18</p></article>
+						<article class="day-cell"><p>19</p></article>
+						<article class="day-cell"><p>20</p></article>
+						<article class="day-cell"><p>21</p></article>
+						<article class="day-cell"><p>22</p></article>
+						<article class="day-cell"><p>23</p></article>
+
+						<article class="day-cell"><p>24</p></article>
+						<article class="day-cell has-event"><p>25</p><span>Design review</span></article>
+						<article class="day-cell"><p>26</p></article>
+						<article class="day-cell"><p>27</p></article>
+						<article class="day-cell"><p>28</p></article>
+						<article class="day-cell"><p>29</p></article>
+						<article class="day-cell"><p>30</p></article>
+
+						<article class="day-cell"><p>31</p></article>
+						<article class="day-cell muted"><p>1</p></article>
+						<article class="day-cell muted"><p>2</p></article>
+						<article class="day-cell muted"><p>3</p></article>
+						<article class="day-cell muted"><p>4</p></article>
+						<article class="day-cell muted"><p>5</p></article>
+						<article class="day-cell muted"><p>6</p></article>
+					</div>
+				</section>
+
+				<aside class="content-card panel-stack">
+					<h3>Event detail panel</h3>
+					<p>Selecting a date will eventually show full event details here.</p>
+					<ul class="detail-list">
+						<li>Date and title</li>
+						<li>Time range and location</li>
+						<li>Notes and category tags</li>
+					</ul>
+				</aside>
+			</div>
+		</section>
+
+		<section class="section">
+			<div class="section-heading">
+				<p class="section-label">Planned features</p>
+				<h2>What I want this calendar to include</h2>
+			</div>
+
+			<div class="card-grid">
+				<article class="content-card">
+					<h3>Flexible views</h3>
+					<p>Month, week, or day-style layouts that make it easier to read time in different ways.</p>
+				</article>
+
+				<article class="content-card">
+					<h3>Event handling</h3>
+					<p>Clear event blocks, titles, time details, and space for more structured planning information.</p>
+				</article>
+
+				<article class="content-card">
+					<h3>Smarter organization</h3>
+					<p>Categories, reminders, or upcoming highlights that make the calendar more practical than a static grid.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="section">
+			<article class="content-card">
+				<p class="section-label">Why this build matters</p>
+				<h2>Date logic looks simple until you start building around it.</h2>
+				<p>Calendars are useful because they organize messy information. Building one is a strong exercise in structure, repetition, date handling, and designing layouts that still feel readable when they get busy.</p>
+			</article>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<div class="container footer-layout">
+			<div>
+				<p class="section-label">Next link</p>
+				<h2>The game project rounds out the set.</h2>
+			</div>
+
+			<div class="footer-links">
+				<p><a href="index.html">Back to homepage</a></p>
+				<p><a href="project3.html">Next project: Simple Browser Game</a></p>
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
