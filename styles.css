@@ -528,7 +528,9 @@ main {
 .calendar-form button:focus-visible,
 .calendar-event-edit:focus-visible,
 .calendar-event-toggle:focus-visible,
-.calendar-event-remove:focus-visible {
+.calendar-event-remove:focus-visible,
+.game-controls button:focus-visible,
+#tetris-restart:focus-visible {
     outline: 2px solid var(--page-accent);
     outline-offset: 2px;
 }
@@ -958,21 +960,70 @@ main {
     justify-content: center;
 }
 
+.tetris-board-shell {
+    position: relative;
+    width: min(100%, 340px);
+}
+
 .board-grid {
     /* 10 kolonner speiler klassisk Tetris-bredde; antall rader styres av antall .cell-elementer i HTML. */
     display: grid;
     grid-template-columns: repeat(10, minmax(0, 1fr));
-    width: min(100%, 340px);
+    width: 100%;
     gap: 0.2rem;
     padding: 0.5rem;
     border-radius: 14px;
     background: rgba(33, 28, 24, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .cell {
     aspect-ratio: 1;
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.08s ease;
+}
+
+.tetris-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 1rem;
+    border-radius: 14px;
+    color: #fff8ef;
+    background: rgba(19, 15, 12, 0.78);
+    backdrop-filter: blur(2px);
+}
+
+.tetris-overlay h3 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.tetris-overlay p {
+    margin: 0;
+    color: rgba(255, 248, 239, 0.85);
+}
+
+#tetris-restart {
+    justify-self: center;
+    min-width: 150px;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    color: #fff8ef;
+    background: rgba(255, 255, 255, 0.08);
+    font: inherit;
+    cursor: pointer;
+}
+
+#tetris-restart:hover {
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .filled-a {
@@ -989,6 +1040,198 @@ main {
 
 .filled-d {
     background: #d264c5;
+}
+
+.filled-e {
+    background: #e5c34a;
+}
+
+.filled-f {
+    background: #5e79dd;
+}
+
+.filled-g {
+    background: #d75c70;
+}
+
+.tetris-status {
+    margin-bottom: 0.85rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid rgba(53, 39, 28, 0.18);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.6);
+    font-size: 0.92rem;
+}
+
+.tetris-status.is-running {
+    border-color: rgba(31, 122, 87, 0.45);
+    color: #15573f;
+    background: rgba(31, 122, 87, 0.12);
+}
+
+.tetris-status.is-paused {
+    border-color: rgba(42, 95, 146, 0.42);
+    color: #214c74;
+    background: rgba(42, 95, 146, 0.12);
+}
+
+.tetris-status.is-game-over {
+    border-color: rgba(162, 51, 51, 0.45);
+    color: #7d2626;
+    background: rgba(255, 239, 239, 0.78);
+}
+
+.game-controls {
+    display: grid;
+    gap: 0.45rem;
+    margin-bottom: 0.9rem;
+}
+
+.game-controls button {
+    padding: 0.55rem 0.6rem;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.78);
+    font: inherit;
+    cursor: pointer;
+}
+
+.game-controls button:hover {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.game-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tetris-hold-hint {
+    margin: -0.65rem 0 1rem;
+    padding: 0.35rem 0.45rem;
+    border: 1px dashed rgba(53, 39, 28, 0.2);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.tetris-hold-hint.is-ready {
+    color: #184f39;
+    border-color: rgba(31, 122, 87, 0.45);
+    background: rgba(31, 122, 87, 0.08);
+}
+
+.tetris-hold-hint.is-locked {
+    color: #7a5a24;
+    border-color: rgba(161, 118, 43, 0.42);
+    background: rgba(242, 220, 171, 0.35);
+}
+
+#tetris-start,
+#tetris-hold,
+#tetris-hard-drop {
+    color: #fff8ef;
+    background: var(--text);
+    border-color: var(--text);
+}
+
+#tetris-start:hover,
+#tetris-hold:hover,
+#tetris-hard-drop:hover {
+    filter: brightness(1.08);
+}
+
+#tetris-ghost-toggle.is-off {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(53, 39, 28, 0.22);
+}
+
+#tetris-sound-toggle.is-off {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(53, 39, 28, 0.22);
+}
+
+.board-grid.is-line-clear-flash {
+    animation: tetrisLineClearFlash 240ms ease-out;
+}
+
+@keyframes tetrisLineClearFlash {
+    0% {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        filter: brightness(1);
+    }
+
+    45% {
+        box-shadow: inset 0 0 0 2px rgba(255, 246, 205, 0.55), 0 0 0 3px rgba(255, 233, 168, 0.26);
+        filter: brightness(1.2);
+    }
+
+    100% {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+        filter: brightness(1);
+    }
+}
+
+/* Rad-spesifikk flash pa cellene i rydde-radene; vises mot det gamle brettet. */
+.cell.is-row-flash {
+    animation: tetrisRowFlash 160ms ease-in;
+    animation-fill-mode: forwards;
+}
+
+@keyframes tetrisRowFlash {
+    0%   { background: rgba(255, 248, 180, 0.5); }
+    40%  { background: rgba(255, 255, 230, 0.98); }
+    100% { background: rgba(255, 250, 200, 0.72); }
+}
+
+.cell.ghost-piece {
+    background: rgba(255, 255, 255, 0.02);
+    border: 2px dashed rgba(255, 255, 255, 0.38);
+}
+
+.cell.ghost-filled-a {
+    border-color: rgba(75, 195, 212, 0.8);
+}
+
+.cell.ghost-filled-b {
+    border-color: rgba(240, 143, 63, 0.8);
+}
+
+.cell.ghost-filled-c {
+    border-color: rgba(108, 181, 100, 0.8);
+}
+
+.cell.ghost-filled-d {
+    border-color: rgba(210, 100, 197, 0.8);
+}
+
+.cell.ghost-filled-e {
+    border-color: rgba(229, 195, 74, 0.8);
+}
+
+.cell.ghost-filled-f {
+    border-color: rgba(94, 121, 221, 0.8);
+}
+
+.cell.ghost-filled-g {
+    border-color: rgba(215, 92, 112, 0.8);
+}
+
+.keycap {
+    display: inline-block;
+    min-width: 6.25rem;
+    margin-right: 0.45rem;
+    padding: 0.1rem 0.42rem;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.76);
 }
 
 .stat-list {

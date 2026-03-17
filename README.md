@@ -14,7 +14,7 @@ Portfolio-style project collection focused on three browser projects that are be
 
 - **Project 3: Tetris Game**
   - Goal: Build a browser Tetris with clean controls, scoring, and line-clear logic.
-  - Current stage: Planning.
+  - Current stage: In Progress (playable phase with spawn, movement, rotation, soft/hard drop, game-over overlay, and restart flow).
 
 ## Project status badges
 
@@ -24,7 +24,7 @@ These badges are now visible on the homepage and each project page.
 | --- | --- |
 | Project 1: Advanced Calculator | In Progress |
 | Project 2: Advanced Calendar | In Progress |
-| Project 3: Tetris Game | Planning |
+| Project 3: Tetris Game | In Progress |
 
 ## Repository structure
 
@@ -34,11 +34,16 @@ These badges are now visible on the homepage and each project page.
 - `project3.html` - Tetris Game page
 - `calculator.js` - Dedicated JavaScript logic for Project 1 (calculator)
 - `calendar.js` - Dedicated JavaScript logic for Project 2 (calendar)
-- `tetris.js` - Dedicated JavaScript entry point for Project 3 (Tetris)
+- `tetris-config.js` - Shared Tetris constants, speed rules, and piece templates
+- `tetris-engine.js` - Pure Tetris game logic (board, movement, collision, scoring)
+- `tetris-render.js` - DOM rendering for board, next piece, and stats
+- `tetris-controls.js` - Keyboard/button input wiring for Tetris
+- `tetris.js` - Tetris page entry point that connects modules together
 - `script.js` - Legacy pointer file kept for history/transition
 - `script.py` - Python reference calculator engine for reviewing the same expression logic outside the browser
 - `server.js` - Simple local Node.js server for running the site on localhost
 - `smoke-test.js` - Combined smoke tests for calculator and calendar logic
+- `tetris-smoke.js` - Smoke tests for Tetris engine start-phase logic
 - `package.json` - Optional npm scripts for local server and smoke tests
 - `styles.css` - Shared design system used by all pages
 - `assets/previews/calculator-preview.svg` - Visual preview image for implemented calculator milestone
@@ -79,10 +84,11 @@ Then open `http://localhost:3000`.
 
 ### Option 5
 
-Run all smoke tests (calculator + calendar):
+Run core smoke tests directly:
 
 ```bash
 node smoke-test.js
+node tetris-smoke.js
 ```
 
 ### Optional npm scripts
@@ -94,7 +100,7 @@ npm test
 npm start
 ```
 
-`npm test` runs `node smoke-test.js` and `npm start` runs `node server.js`.
+`npm test` runs both smoke suites (`smoke-test.js` + `tetris-smoke.js`) and `npm start` runs `node server.js`.
 
 ## Optional tools
 
@@ -151,6 +157,16 @@ python script.py --action log "1000"
   - Status badges added across homepage and project pages.
   - Visual preview image added for calculator milestone.
   - Node.js local server included (`server.js`) for localhost workflow.
+  - Tetris moved from planning shell to playable start phase (spawn, move, rotate, soft drop, pause, reset).
+  - Tetris code split into beginner-friendly modules (`tetris-config.js`, `tetris-engine.js`, `tetris-render.js`, `tetris-controls.js`, `tetris.js`).
+  - Added Tetris smoke tests (`tetris-smoke.js`) and included them in `npm test`.
+  - Tetris phase 2 added: hard drop action, game-over overlay, restart button flow, and smoother level-speed curve.
+  - Added hold piece system (single-use per turn) and ghost-piece landing preview.
+  - Added small soft-drop score bonus and updated control panel hints.
+  - Added ghost toggle control (button + G key) and clearer hold readiness hint in panel.
+  - Added lightweight line-clear flash feedback and a browser-audio stub for clear events.
+  - Added sound on/off toggle (button + M key) that mutes the audio stub.
+  - Added row-specific cell flash on line clear with delayed render for visible before/after feedback.
 
 ## Contact
 

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Tetris Game | Freetime Projects</title>
-	<meta name="description" content="Planning page for a browser Tetris game focused on tetromino movement, row clearing, scoring, and replay value.">
+	<meta name="description" content="Playable start phase for a browser Tetris game focused on tetromino movement, rotation, row clearing, and scoring.">
 	<link rel="stylesheet" href="styles.css">
 </head>
 <body class="page-game">
@@ -13,7 +13,7 @@
 			<div class="header-copy">
 				<div class="project-meta">
 					<p class="eyebrow">Project 3</p>
-					<span class="status-badge" data-status="planning">Planning</span>
+					<span class="status-badge" data-status="in-progress">In Progress</span>
 				</div>
 				<h1>Tetris Game</h1>
 				<p class="intro">A browser-based Tetris project focused on clean movement, clear rules, and satisfying line-clearing gameplay.</p>
@@ -45,70 +45,67 @@
 
 				<article class="content-card">
 					<p class="card-kicker">Status</p>
-					<h3>Currently in planning</h3>
-					<p>The layout shell is now in place first. The next phase is wiring piece generation, movement controls, and row-clearing logic.</p>
+					<h3>Currently in progress</h3>
+					<p>Playable start phase is now live: pieces spawn, move, rotate, and fall with score/line/level updates.</p>
 				</article>
 			</div>
 		</section>
 
 		<section class="section">
 			<div class="section-heading">
-				<p class="section-label">Layout preview</p>
-				<h2>Tetris interface shell (HTML only)</h2>
-				<p>This section mirrors the final game screen structure without JavaScript behavior yet.</p>
+				<p class="section-label">Live preview</p>
+				<h2>Tetris start phase (playable)</h2>
+				<p>Use arrows to move and rotate pieces. Use C for hold, Enter for hard drop, and Space/P to pause.</p>
 			</div>
 
-			<!-- Brettlayouten under er kun visuell; 20 rader x 10 kolonner matcher klassisk Tetris-grid. -->
 			<div class="tetris-shell">
-				<section class="content-card tetris-stage" aria-label="Tetris board preview">
-					<!-- Hver rad har 10 celler; hele markuppen her er statisk visning frem til spillmotoren genererer brettet dynamisk. -->
-					<div class="board-grid" aria-hidden="true">
-						<span class="cell filled-a"></span><span class="cell filled-a"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell filled-a"></span><span class="cell filled-a"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell filled-b"></span><span class="cell filled-b"></span><span class="cell filled-b"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell filled-b"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>
-						<span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span><span class="cell filled-c"></span>
-						<span class="cell filled-d"></span><span class="cell"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span><span class="cell filled-d"></span>
+				<section class="content-card tetris-stage" aria-label="Tetris board">
+					<div class="tetris-board-shell">
+						<!-- Brettet fylles dynamisk av tetris-render.js -->
+						<div class="board-grid" id="tetris-board" role="img" aria-label="Tetris board"></div>
+
+						<div class="tetris-overlay is-hidden" id="tetris-overlay" aria-live="polite">
+							<h3 id="tetris-overlay-title">Game over</h3>
+							<p id="tetris-overlay-text">Try a new run to beat your score.</p>
+							<button type="button" id="tetris-restart">Restart game</button>
+						</div>
 					</div>
 				</section>
 
 				<aside class="content-card panel-stack">
 					<h3>Game panel</h3>
+					<p class="tetris-status" id="tetris-status">Status: Ready</p>
 					<div class="stat-list">
-						<p><span>Score</span><strong>004200</strong></p>
-						<p><span>Lines</span><strong>18</strong></p>
-						<p><span>Level</span><strong>4</strong></p>
+						<p><span>Score</span><strong id="tetris-score">000000</strong></p>
+						<p><span>Lines</span><strong id="tetris-lines">0</strong></p>
+						<p><span>Level</span><strong id="tetris-level">1</strong></p>
+						<p><span>Speed</span><strong id="tetris-speed">x1.00</strong></p>
 					</div>
+
+					<h3>Hold piece</h3>
+					<div class="mini-grid" id="tetris-hold-piece" aria-label="Hold piece preview"></div>
+					<p class="tetris-hold-hint" id="tetris-hold-hint">Hold: Ready</p>
 
 					<h3>Next piece</h3>
-					<!-- Mini-grid simulerer neste brikke-panel uten at spillmotoren er koblet pa. -->
-					<div class="mini-grid" aria-hidden="true">
-						<span></span><span></span><span class="filled-a"></span><span></span>
-						<span></span><span class="filled-a"></span><span class="filled-a"></span><span></span>
-						<span></span><span></span><span class="filled-a"></span><span></span>
-						<span></span><span></span><span></span><span></span>
+					<div class="mini-grid" id="tetris-next-piece" aria-label="Next piece preview"></div>
+
+					<div class="game-controls" aria-label="Game actions">
+						<button type="button" id="tetris-start">Start</button>
+						<button type="button" id="tetris-pause">Pause / Resume</button>
+						<button type="button" id="tetris-hold">Hold</button>
+						<button type="button" id="tetris-ghost-toggle">Ghost: ON</button>					<button type="button" id="tetris-sound-toggle">Sound: ON</button>						<button type="button" id="tetris-hard-drop">Hard drop</button>
+						<button type="button" id="tetris-reset">Reset</button>
 					</div>
 
-					<h3>Controls preview</h3>
+					<h3>Controls</h3>
 					<ul class="detail-list">
-						<li>Move: Left / Right arrows</li>
-						<li>Rotate: Up arrow</li>
-						<li>Soft drop: Down arrow</li>
-						<li>Pause: Space</li>
+						<li><span class="keycap">Left / Right</span> Move</li>
+						<li><span class="keycap">Up</span> Rotate</li>
+						<li><span class="keycap">Down</span> Soft drop</li>
+						<li><span class="keycap">C</span> Hold</li>
+						<li><span class="keycap">G</span> Toggle ghost</li>					<li><span class="keycap">M</span> Toggle sound</li>						<li><span class="keycap">Enter</span> Hard drop</li>
+						<li><span class="keycap">Space / P</span> Pause / Resume</li>
+						<li><span class="keycap">R</span> Reset board</li>
 					</ul>
 				</aside>
 			</div>
@@ -160,6 +157,10 @@
 			</div>
 		</div>
 	</footer>
+	<script src="tetris-config.js" defer></script>
+	<script src="tetris-engine.js" defer></script>
+	<script src="tetris-render.js" defer></script>
+	<script src="tetris-controls.js" defer></script>
 	<script src="tetris.js" defer></script>
 </body>
 </html>
