@@ -338,6 +338,7 @@ main {
 
 .calendar-weekdays,
 .calendar-grid {
+    /* Samme 7-kolonne-oppsett holder ukedagsrad og datoceller perfekt justert. */
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 0.45rem;
@@ -393,6 +394,7 @@ main {
 }
 
 .board-grid {
+    /* 10 kolonner speiler klassisk Tetris-bredde; antall rader styres av antall .cell-elementer i HTML. */
     display: grid;
     grid-template-columns: repeat(10, minmax(0, 1fr));
     width: min(100%, 340px);
