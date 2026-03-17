@@ -629,6 +629,8 @@ function initTetrisPage() {
 			osc.stop(now + 0.41);
 		};
 	}
+
+	function triggerLineClearFeedback(clearedLines, clearedRows, onComplete) {
 		if (!clearedLines || !ui.board) {
 			if (onComplete) {
 				onComplete();
