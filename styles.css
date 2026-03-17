@@ -266,6 +266,11 @@ main {
     margin-top: 0;
 }
 
+.calculator-main {
+    display: flex;
+    flex-direction: column;
+}
+
 .calc-display {
     padding: 1rem;
     border-radius: 16px;
@@ -298,6 +303,128 @@ main {
     font-size: clamp(1.8rem, 4vw, 2.5rem);
 }
 
+.display-meta {
+    margin-top: 0.9rem;
+    margin-bottom: 0;
+    font-size: 0.92rem;
+    color: var(--muted);
+}
+
+.display-result.is-muted {
+    color: var(--muted);
+}
+
+.display-result.has-error,
+.display-meta.is-error {
+    color: #a23333;
+}
+
+.calc-history {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.history-empty {
+    padding: 0.9rem;
+    border: 1px dashed rgba(53, 39, 28, 0.18);
+    border-radius: 14px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.38);
+}
+
+.history-button {
+    display: block;
+    width: 100%;
+    padding: 0.85rem 0.9rem;
+    font: inherit;
+    text-align: left;
+    border: 1px solid rgba(53, 39, 28, 0.16);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.72);
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.history-entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+.history-pin {
+    min-width: 70px;
+    padding: 0.85rem 0.7rem;
+    border: 1px solid rgba(53, 39, 28, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.72);
+    font: inherit;
+    cursor: pointer;
+}
+
+.history-pin[data-pinned="true"] {
+    color: #fff8ef;
+    background: var(--text);
+    border-color: var(--text);
+}
+
+.history-button:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(53, 39, 28, 0.28);
+}
+
+.history-expression,
+.history-result {
+    display: block;
+}
+
+.history-expression {
+    margin-bottom: 0.35rem;
+    font-size: 0.92rem;
+    color: var(--muted);
+}
+
+.history-result {
+    font-size: 1.2rem;
+    font-family: "Fraunces", Georgia, serif;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+.history-note {
+    margin: 0;
+    font-size: 0.92rem;
+}
+
+.calc-tools {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+}
+
+.calc-tools button {
+    padding: 0.6rem 0.5rem;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.74);
+    font: inherit;
+    cursor: pointer;
+}
+
+.calc-tools button:hover,
+.history-pin:hover {
+    background: rgba(255, 255, 255, 0.96);
+}
+
+.calc-tools button[data-action="history-clear"] {
+    grid-column: span 2;
+}
+
 .calc-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -312,11 +439,26 @@ main {
     border: 1px solid rgba(53, 39, 28, 0.22);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .calc-grid button:hover,
 .calendar-header button:hover {
     background: rgba(255, 255, 255, 0.95);
+}
+
+.calc-grid button:active {
+    transform: translateY(1px);
+}
+
+.calc-grid button:focus-visible,
+.history-button:focus-visible,
+.history-pin:focus-visible,
+.calc-tools button:focus-visible,
+.calendar-header button:focus-visible {
+    outline: 2px solid var(--page-accent);
+    outline-offset: 2px;
 }
 
 .calc-grid .action-key {
@@ -543,6 +685,14 @@ main {
 
     .calc-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .calc-tools {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calc-tools button[data-action="history-clear"] {
+        grid-column: span 2;
     }
 
     .calendar-weekdays p {

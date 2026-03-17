@@ -6,7 +6,7 @@ Portfolio-style project collection focused on three browser projects that are be
 
 - **Project 1: Advanced Calculator**
   - Goal: Build a calculator with both standard and advanced operations.
-  - Current stage: HTML/CSS layout complete, functionality not started.
+  - Current stage: Beginner-friendly working version complete with keypad logic, history pinning, memory actions, and scientific shortcuts.
 
 - **Project 2: Advanced Calendar**
   - Goal: Build a structured calendar with richer date/event views.
@@ -22,11 +22,15 @@ Portfolio-style project collection focused on three browser projects that are be
 - `project1.html` - Advanced Calculator page
 - `project2.html` - Advanced Calendar page
 - `project3.html` - Tetris Game page
+- `script.js` - Browser interactivity, currently used by the calculator page
+- `script.py` - Python reference calculator engine for reviewing the same expression logic outside the browser
 - `styles.css` - Shared design system used by all pages
 
 ## Run locally
 
 This is currently a static HTML/CSS project, so there are no dependencies to install.
+
+No extra tools are required to run the website itself.
 
 ### Option 1
 
@@ -46,9 +50,26 @@ python -m http.server 5500
 
 Then open `http://localhost:5500`.
 
+## Optional tools
+
+- **Node.js** (optional): useful for JavaScript tooling and syntax checks, but not required to open the site.
+- **Python** (optional for browser use, useful for this project): used by `script.py` to mirror calculator logic in a second language.
+
+If you install Node and the `node` command is not recognized in VS Code terminal, restart VS Code (or your PC) so PATH refreshes.
+
+## Python logic preview
+
+The calculator logic is also mirrored in `script.py` so the project shows both JavaScript and Python.
+
+```bash
+python script.py "2*(3+4)"
+python script.py --action sqrt "81"
+python script.py --action log "1000"
+```
+
 ## Suggested next improvements
 
-- Add JavaScript functionality to one project at a time (calculator, calendar, then Tetris)
+- Expand the calculator with more scientific actions or history controls before moving to the calendar
 - Add a small "status" badge per project (Planning / In Progress / Completed)
 - Add screenshots or short GIF previews when features are implemented
 - Add a short changelog section to track milestones

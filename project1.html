@@ -42,8 +42,8 @@
 
 				<article class="content-card">
 					<p class="card-kicker">Status</p>
-					<h3>Currently in planning</h3>
-					<p>The HTML and design foundation are in place first. The next phase is shaping the interface sections before adding actual calculator behavior.</p>
+					<h3>First functional version</h3>
+					<p>The calculator now runs in the browser with JavaScript, while the matching logic model also lives in the Python script so the project shows both environments side by side.</p>
 				</article>
 			</div>
 		</section>
@@ -51,66 +51,74 @@
 		<section class="section">
 			<div class="section-heading">
 				<p class="section-label">Layout preview</p>
-				<h2>Calculator interface shell (HTML only)</h2>
-				<p>This section shows the final layout zones before any calculator logic is connected.</p>
+				<h2>Calculator interface (beginner-friendly working version)</h2>
+				<p>The logic is now written in a more straightforward style, and the controls add clearer scientific shortcuts for step-by-step learning.</p>
 			</div>
 
-			<!-- Dette er en ren HTML-skisse av kalkulatoren; funksjonalitet kommer senere i JavaScript. -->
 			<div class="calculator-shell">
 				<aside class="content-card panel-stack">
 					<h3>History</h3>
-					<ul class="detail-list">
-						<li>Previous calculations will appear here</li>
-						<li>Planned actions: clear, reuse, and pin</li>
-						<li>Recent expression preview</li>
-					</ul>
+					<ol class="calc-history" id="calc-history" aria-live="polite">
+						<li class="history-empty">No calculations yet.</li>
+					</ol>
+					<p class="history-note">Click a result to load it. Use Pin to keep important rows at the top. Keyboard input works too: digits, operators, brackets, Enter, Backspace, and Escape.</p>
 				</aside>
 
-				<section class="content-card calculator-main" aria-label="Calculator keypad layout preview">
+				<section class="content-card calculator-main" aria-label="Advanced calculator">
 					<div class="calc-display">
 						<p class="display-label">Expression</p>
-						<p class="display-value">(45 + 15) / 3</p>
+						<p class="display-value" id="calc-expression" aria-live="polite">0</p>
 						<p class="display-label">Result</p>
-						<p class="display-result">20</p>
+						<p class="display-result" id="calc-result" aria-live="polite">0</p>
+						<p class="display-meta" id="calc-meta">Ready. Memory: empty</p>
 					</div>
 
-					<!-- Fast 5x6 tast-grid gjor det enklere a mappe knapper og tastatursnarveier senere. -->
-					<div class="calc-grid" aria-hidden="true">
-						<button type="button">MC</button>
-						<button type="button">MR</button>
-						<button type="button">M+</button>
-						<button type="button">M-</button>
-						<button type="button">C</button>
+					<div class="calc-grid" aria-label="Calculator keypad">
+						<button type="button" data-action="memory-clear">MC</button>
+						<button type="button" data-action="memory-recall">MR</button>
+						<button type="button" data-action="memory-add">M+</button>
+						<button type="button" data-action="memory-subtract">M-</button>
+						<button type="button" data-action="clear">C</button>
 
-						<button type="button">(</button>
-						<button type="button">)</button>
-						<button type="button">%</button>
-						<button type="button">/</button>
-						<button type="button">BS</button>
+						<button type="button" data-action="append" data-value="(">(</button>
+						<button type="button" data-action="append" data-value=")">)</button>
+						<button type="button" data-action="percent">%</button>
+						<button type="button" data-action="append" data-value="/">/</button>
+						<button type="button" data-action="backspace">BS</button>
 
-						<button type="button">7</button>
-						<button type="button">8</button>
-						<button type="button">9</button>
-						<button type="button">*</button>
-						<button type="button">x²</button>
+						<button type="button" data-action="append" data-value="7">7</button>
+						<button type="button" data-action="append" data-value="8">8</button>
+						<button type="button" data-action="append" data-value="9">9</button>
+						<button type="button" data-action="append" data-value="*">*</button>
+						<button type="button" data-action="square">x²</button>
 
-						<button type="button">4</button>
-						<button type="button">5</button>
-						<button type="button">6</button>
-						<button type="button">-</button>
-						<button type="button">√</button>
+						<button type="button" data-action="append" data-value="4">4</button>
+						<button type="button" data-action="append" data-value="5">5</button>
+						<button type="button" data-action="append" data-value="6">6</button>
+						<button type="button" data-action="append" data-value="-">-</button>
+						<button type="button" data-action="sqrt">√</button>
 
-						<button type="button">1</button>
-						<button type="button">2</button>
-						<button type="button">3</button>
-						<button type="button">+</button>
-						<button type="button">1/x</button>
+						<button type="button" data-action="append" data-value="1">1</button>
+						<button type="button" data-action="append" data-value="2">2</button>
+						<button type="button" data-action="append" data-value="3">3</button>
+						<button type="button" data-action="append" data-value="+">+</button>
+						<button type="button" data-action="reciprocal">1/x</button>
 
-						<button type="button">+/-</button>
-						<button type="button">0</button>
-						<button type="button">.</button>
-						<button type="button" class="action-key">=</button>
-						<button type="button">Ans</button>
+						<button type="button" data-action="negate">+/-</button>
+						<button type="button" data-action="append" data-value="0">0</button>
+						<button type="button" data-action="append" data-value=".">.</button>
+						<button type="button" class="action-key" data-action="equals">=</button>
+						<button type="button" data-action="answer">Ans</button>
+					</div>
+
+					<div class="calc-tools" aria-label="Scientific shortcuts">
+						<button type="button" data-action="scientific" data-fn="sin">sin</button>
+						<button type="button" data-action="scientific" data-fn="cos">cos</button>
+						<button type="button" data-action="scientific" data-fn="tan">tan</button>
+						<button type="button" data-action="scientific" data-fn="log">log</button>
+						<button type="button" data-action="constant" data-value="pi">pi</button>
+						<button type="button" data-action="constant" data-value="e">e</button>
+						<button type="button" data-action="history-clear">Clear History</button>
 					</div>
 				</section>
 			</div>
@@ -162,5 +170,6 @@
 			</div>
 		</div>
 	</footer>
+	<script src="script.js" defer></script>
 </body>
 </html>
