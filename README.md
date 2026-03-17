@@ -62,7 +62,7 @@ If you’d like to connect:
 
 - GitHub: (this profile)
 - LinkedIn: (https://www.linkedin.com/in/tarik-j-51a341249/)
-- Email: _add your email here_
+- Email: takijelin@gmail.com
 
 ---
 
