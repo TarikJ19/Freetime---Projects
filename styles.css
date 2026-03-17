@@ -6,9 +6,10 @@
     --line: rgba(46, 35, 28, 0.12);
 }
 
+/* Egne fargevariabler per side gir samme designsystem med tydelig prosjektidentitet. */
 body.page-home {
-    --page-accent: #c75930;
-    --page-wash: rgba(199, 89, 48, 0.18);
+    --page-accent: #d8632b;
+    --page-wash: rgba(216, 99, 43, 0.2);
 }
 
 body.page-calculator {
@@ -22,8 +23,8 @@ body.page-calendar {
 }
 
 body.page-game {
-    --page-accent: #a95a19;
-    --page-wash: rgba(169, 90, 25, 0.16);
+    --page-accent: #9d84d8;
+    --page-wash: rgba(214, 201, 248, 0.34);
 }
 
 * {
@@ -213,6 +214,7 @@ main {
     margin-top: 0.6rem;
 }
 
+/* Forsidekort er bygd som en stor klikkbar lenke i stedet for kun overskriften. */
 .project-card-card {
     padding: 0;
     overflow: hidden;
@@ -252,6 +254,7 @@ main {
     margin-left: 0.3rem;
 }
 
+/* Disse shell-klassene styrer grunnlayout for HTML-forhandsvisning av hver app-type. */
 .calculator-shell,
 .calendar-shell,
 .tetris-shell {
@@ -491,6 +494,7 @@ main {
     border-color: currentColor;
 }
 
+/* Fra 760px bruker vi to/tre kolonner for bedre bruk av bredde pa desktop. */
 @media (min-width: 760px) {
     .header-layout {
         grid-template-columns: minmax(0, 1.3fr) auto;
@@ -520,6 +524,7 @@ main {
     }
 }
 
+/* Mobilregler prioriterer lesbarhet og stor nok trykkflate pa knapper/kort. */
 @media (max-width: 759px) {
     .site-header {
         padding-top: 1.25rem;

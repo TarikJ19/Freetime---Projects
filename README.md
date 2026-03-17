@@ -1,67 +1,61 @@
 # Freetime Projects
 
-A curated collection of **job-portfolio projects** and **for-fun experiments** I build in my free time. This repo is meant to showcase my growth as a developer, my problem-solving approach, and the kinds of products/tools I enjoy building.
+Portfolio-style project collection focused on three browser projects that are being built step by step.
 
-## What you’ll find here
+## Current projects
 
-Projects generally fall into a few categories:
+- **Project 1: Advanced Calculator**
+  - Goal: Build a calculator with both standard and advanced operations.
+  - Current stage: HTML/CSS layout complete, functionality not started.
 
-- **Portfolio-ready apps** — more structured projects with cleaner architecture, documentation, tests, and deployment notes.
-- **Learning projects** — smaller builds focused on practicing a framework, language feature, or concept.
-- **Experiments & prototypes** — quick ideas, proof-of-concepts, automation scripts, and “what if…” builds.
+- **Project 2: Advanced Calendar**
+  - Goal: Build a structured calendar with richer date/event views.
+  - Current stage: HTML/CSS layout complete, functionality not started.
 
-## Highlights
-
-I keep this section updated with the projects I’m most proud of.
-
-- **Project Name** — one-line description  
-  - Tech: `...`  
-  - Status: `In progress / Completed`  
-  - Folder: `./path-to-project`
-
-(Add or remove entries as you like.)
+- **Project 3: Tetris Game**
+  - Goal: Build a browser Tetris with clean controls, scoring, and line-clear logic.
+  - Current stage: HTML/CSS layout complete, functionality not started.
 
 ## Repository structure
 
-Typical layout (may evolve over time):
+- `index.html` - Homepage with project cards
+- `project1.html` - Advanced Calculator page
+- `project2.html` - Advanced Calendar page
+- `project3.html` - Tetris Game page
+- `styles.css` - Shared design system used by all pages
 
-- `apps/` — larger applications (full-stack, mobile, desktop)
-- `web/` — websites, front-end builds, UI projects
-- `api/` — backend services, REST/GraphQL endpoints
-- `scripts/` — automation, tooling, utilities
-- `notes/` — learning notes, references, write-ups
+## Run locally
 
-If your repo uses a different structure, feel free to rename these sections to match.
+This is currently a static HTML/CSS project, so there are no dependencies to install.
 
-## How to run a project
+### Option 1
 
-Most projects include their own README inside their folder with setup steps. In general:
+Open `index.html` directly in a browser.
 
-1. Open the project folder.
-2. Follow that folder’s `README.md`.
-3. Install dependencies and run locally.
+### Option 2
 
-Example (Node.js projects):
+Use VS Code Live Server and open the project from a local URL.
+
+### Option 3
+
+Run a simple local server from this folder:
+
 ```bash
-npm install
-npm run dev
+python -m http.server 5500
 ```
 
-## Goals
+Then open `http://localhost:5500`.
 
-This repository is a place for me to:
+## Suggested next improvements
 
-- Build consistently and ship real projects
-- Practice clean code and maintainable structure
-- Explore new technologies
-- Create reusable components, utilities, and templates
+- Add JavaScript functionality to one project at a time (calculator, calendar, then Tetris)
+- Add a small "status" badge per project (Planning / In Progress / Completed)
+- Add screenshots or short GIF previews when features are implemented
+- Add a short changelog section to track milestones
 
 ## Contact
 
-If you’d like to connect:
-
-- GitHub: (this profile)
-- LinkedIn: (https://www.linkedin.com/in/tarik-j-51a341249/)
+- LinkedIn: https://www.linkedin.com/in/tarik-j-51a341249/
 
 ---
 
