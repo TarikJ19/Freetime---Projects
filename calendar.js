@@ -64,6 +64,8 @@ function initCalendarPage() {
 
 	const state = createInitialCalendarState();
 
+	// Felles flyt i alle handlers: oppdater state, avslutt eventuell redigering, og render på nytt.
+
 	ui.prevButton.addEventListener("click", () => {
 		moveCalendarPeriod(state, -1);
 		cancelCalendarEventEdit(state, ui);
@@ -168,6 +170,8 @@ function setCalendarViewMode(state, viewMode) {
 function moveCalendarPeriod(state, step) {
 	const selected = fromDateKey(state.selectedDateKey);
 	let nextDate;
+
+	// -1 betyr bakover, +1 betyr fremover. Hvor stort hoppet er styres av visning.
 
 	if (state.viewMode === "month") {
 		nextDate = new Date(state.viewYear, state.viewMonth + step, 1);
@@ -274,6 +278,7 @@ function renderCalendarEventPanel(state, ui) {
 
 	ui.eventList.replaceChildren();
 
+	// Panelet viser kun events for valgt dato, med aktivt kategori-filter.
 	const visibleEvents = getVisibleCalendarEventsByDateKey(state.events, state.selectedDateKey, state.filterCategory);
 	if (!visibleEvents.length) {
 		const emptyItem = document.createElement("li");
@@ -345,6 +350,7 @@ function submitCalendarEvent(state, ui) {
 		category: ui.eventCategoryInput.value,
 	});
 
+	// Samme skjema brukes både for nye events og redigering av eksisterende.
 	if (state.editingEventId === null) {
 		addCalendarEvent(state, draft);
 	} else {
@@ -432,6 +438,7 @@ function getCalendarEventsByDateKey(events, dateKey) {
 	return events
 		.filter((entry) => entry.dateKey === dateKey)
 		.sort((first, second) => {
+			// Sorter først på tid, legg tidløse events etterpå, og bruk id for stabil rekkefølge.
 			if (first.time && second.time && first.time !== second.time) {
 				return first.time.localeCompare(second.time);
 			}
@@ -477,6 +484,7 @@ function saveCalendarEvents(events) {
 }
 
 function normalizeCalendarEvent(entry) {
+	// Beskytter mot ugyldige eller gamle localStorage-verdier.
 	if (!entry || typeof entry !== "object") {
 		return null;
 	}
@@ -523,11 +531,13 @@ function normalizeCalendarDateKey(value, fallbackDateKey) {
 		return fallbackDateKey;
 	}
 
+	// Normaliser via Date for å få konsekvent YYYY-MM-DD format.
 	const parsed = fromDateKey(candidate);
 	return toDateKey(parsed);
 }
 
 function normalizeCalendarTime(value) {
+	// Tillat kun 24-timers klokkeslett i format HH:mm.
 	if (typeof value !== "string" || !value.trim()) {
 		return "";
 	}
@@ -584,6 +594,7 @@ function getCalendarDatesForCurrentView(state) {
 		return buildSequentialDates(weekStart, 7);
 	}
 
+	// Måned vises alltid som et 6x7 rutenett for stabil layout mellom måneder.
 	const firstOfMonth = new Date(state.viewYear, state.viewMonth, 1);
 	const mondayStartOffset = (firstOfMonth.getDay() + 6) % 7;
 	const monthGridStart = new Date(state.viewYear, state.viewMonth, 1 - mondayStartOffset);

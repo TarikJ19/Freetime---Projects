@@ -83,6 +83,7 @@ function runAction(state, ui, action, data = {}) {
 	state.error = "";
 
 	try {
+		// All forretningslogikk går via handleAction, og render skjer alltid til slutt.
 		const message = handleAction(state, action, data);
 		state.status = message || "Ready";
 	} catch (error) {
@@ -95,6 +96,7 @@ function runAction(state, ui, action, data = {}) {
 
 // Ett sentralt action-punkt gjør at all knappelogikk ligger på ett sted.
 function handleAction(state, action, data) {
+	// Én action-router gjør det enklere å finne hva hver knapp faktisk gjør.
 	switch (action) {
 		case "append":
 			state.expression = appendToExpression(state.expression, data.value);
@@ -182,6 +184,7 @@ function handleAction(state, action, data) {
 			return "History item removed";
 		}
 		case "history-clear": {
+			// Behold pinned historikk, fjern resten.
 			const pinned = state.history.filter((entry) => entry.pinned);
 			const removedCount = state.history.length - pinned.length;
 			state.history = pinned;
@@ -268,6 +271,7 @@ function getPreview(state) {
 		return { text: "Error", muted: true, isError: true };
 	}
 
+	// Forhåndsvisningen skal være trygg: vis ... i stedet for å kaste feil mens brukeren skriver.
 	if (!state.expression || state.expression === "-") {
 		return {
 			text: state.lastAnswer === null ? "0" : formatNumber(state.lastAnswer),
@@ -568,6 +572,7 @@ function addHistoryItem(state, entry) {
 }
 
 function trimHistory(state) {
+	// Fjern eldste upinnede først, slik at viktige (pinnede) elementer overlever.
 	while (state.history.length > MAX_HISTORY_ITEMS) {
 		let removed = false;
 		for (let index = state.history.length - 1; index >= 0; index -= 1) {
