@@ -167,6 +167,20 @@ function handleAction(state, action, data) {
 			entry.pinned = !entry.pinned;
 			return entry.pinned ? "History item pinned" : "History item unpinned";
 		}
+		case "history-delete": {
+			const id = Number(data.id);
+			if (!id) {
+				throw new Error("History item not found");
+			}
+
+			const beforeCount = state.history.length;
+			state.history = state.history.filter((entry) => entry.id !== id);
+			if (state.history.length === beforeCount) {
+				throw new Error("History item not found");
+			}
+
+			return "History item removed";
+		}
 		case "history-clear": {
 			const pinned = state.history.filter((entry) => entry.pinned);
 			const removedCount = state.history.length - pinned.length;
@@ -233,7 +247,18 @@ function renderHistory(state, historyElement) {
 		pinButton.dataset.pinned = String(entry.pinned);
 		pinButton.textContent = entry.pinned ? "Unpin" : "Pin";
 
-		item.append(loadButton, pinButton);
+		const deleteButton = document.createElement("button");
+		deleteButton.type = "button";
+		deleteButton.className = "history-delete";
+		deleteButton.dataset.action = "history-delete";
+		deleteButton.dataset.id = String(entry.id);
+		deleteButton.textContent = "Remove";
+
+		const actions = document.createElement("div");
+		actions.className = "history-actions";
+		actions.append(pinButton, deleteButton);
+
+		item.append(loadButton, actions);
 		historyElement.append(item);
 	});
 }

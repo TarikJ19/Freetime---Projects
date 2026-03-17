@@ -81,6 +81,52 @@ a {
     color: var(--page-accent);
 }
 
+.project-meta,
+.card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.project-meta .eyebrow,
+.card-meta .card-kicker {
+    margin: 0;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.58rem;
+    border: 1px solid rgba(53, 39, 28, 0.22);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.84);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.status-badge[data-status="planning"] {
+    border-color: rgba(31, 122, 87, 0.32);
+    background: rgba(31, 122, 87, 0.12);
+    color: #15573f;
+}
+
+.status-badge[data-status="in-progress"] {
+    border-color: rgba(42, 95, 146, 0.34);
+    background: rgba(42, 95, 146, 0.12);
+    color: #214c74;
+}
+
+.status-badge[data-status="completed"] {
+    border-color: rgba(216, 99, 43, 0.36);
+    background: rgba(216, 99, 43, 0.14);
+    color: #8a431e;
+}
+
 h1,
 h2,
 h3 {
@@ -355,7 +401,13 @@ main {
     align-items: stretch;
 }
 
-.history-pin {
+.history-actions {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.history-pin,
+.history-delete {
     min-width: 70px;
     padding: 0.85rem 0.7rem;
     border: 1px solid rgba(53, 39, 28, 0.2);
@@ -369,6 +421,11 @@ main {
     color: #fff8ef;
     background: var(--text);
     border-color: var(--text);
+}
+
+.history-delete {
+    border-color: rgba(162, 51, 51, 0.28);
+    color: #7d2626;
 }
 
 .history-button:hover {
@@ -421,6 +478,10 @@ main {
     background: rgba(255, 255, 255, 0.96);
 }
 
+.history-delete:hover {
+    background: rgba(255, 239, 239, 0.95);
+}
+
 .calc-tools button[data-action="history-clear"] {
     grid-column: span 2;
 }
@@ -455,6 +516,7 @@ main {
 .calc-grid button:focus-visible,
 .history-button:focus-visible,
 .history-pin:focus-visible,
+.history-delete:focus-visible,
 .calc-tools button:focus-visible,
 .calendar-header button:focus-visible {
     outline: 2px solid var(--page-accent);
