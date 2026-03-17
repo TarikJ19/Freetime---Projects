@@ -12,6 +12,20 @@
 		LINES_PER_LEVEL: 8,
 		SOFT_DROP_BONUS_PER_ROW: 1,
 		HARD_DROP_BONUS_PER_ROW: 2,
+		// Lydprofil for enkel finjustering pa ett sted.
+		LINE_CLEAR_SOUND_MAX_GAIN: 0.08,
+		CLEAR_HIGHSCORES_SOUND_GAIN_SCALE: 0.65,
+		CANCEL_CLEAR_SOUND_MAX_GAIN: 0.035,
+		LEVEL_UP_SOUND_MAX_GAIN: 0.12,
+		GAME_OVER_SOUND_MAX_GAIN: 0.15,
+		// UI-timing samlet i config for enkel justering.
+		ROW_FLASH_MS: 160,
+		LINE_CLEAR_FLASH_MS: 240,
+		CLEAR_HIGHSCORES_FLASH_MS: 1600,
+		FEEDBACK_TOAST_MS: 1700,
+		// Vanskelighetsgrader mapper til start-niva (hogere niva = raskere).
+		DIFFICULTY_START_LEVELS: [1, 3, 5, 7, 10],
+		DEFAULT_DIFFICULTY: 2,
 		SCORE_BY_LINES: {
 			1: 100,
 			2: 300,

@@ -63,7 +63,18 @@
 					<div class="tetris-board-shell">
 						<!-- Brettet fylles dynamisk av tetris-render.js -->
 						<div class="board-grid" id="tetris-board" role="img" aria-label="Tetris board"></div>
-
+					<!-- Mobile touch controls: D-pad og rotate/drop knapper for touch-devices. -->
+					<div class="tetris-touch-controls" aria-label="Mobile game controls">
+						<div class="touch-dpad">
+							<button type="button" class="touch-btn touch-btn-left" id="tetris-touch-left" title="Move left">◄</button>
+							<button type="button" class="touch-btn touch-btn-right" id="tetris-touch-right" title="Move right">►</button>
+							<button type="button" class="touch-btn touch-btn-down" id="tetris-touch-down" title="Soft drop">▼</button>
+						</div>
+						<div class="touch-actions">
+							<button type="button" class="touch-btn touch-btn-rotate" id="tetris-touch-rotate" title="Rotate (or tap board)">↻</button>
+							<button type="button" class="touch-btn touch-btn-drop" id="tetris-touch-hard-drop" title="Hard drop">⬇⬇</button>
+						</div>
+					</div>
 						<div class="tetris-overlay is-hidden" id="tetris-overlay" aria-live="polite">
 							<h3 id="tetris-overlay-title">Game over</h3>
 							<p id="tetris-overlay-text">Try a new run to beat your score.</p>
@@ -97,6 +108,15 @@
 					<h3>Next piece</h3>
 					<div class="mini-grid" id="tetris-next-piece" aria-label="Next piece preview"></div>
 
+					<h3>Difficulty</h3>
+					<div class="difficulty-selector" aria-label="Game difficulty">
+						<button type="button" class="difficulty-btn" data-difficulty="1" title="Difficulty 1: Easy (slow)">Easy</button>
+						<button type="button" class="difficulty-btn" data-difficulty="2" title="Difficulty 2: Normal">Normal</button>
+						<button type="button" class="difficulty-btn" data-difficulty="3" title="Difficulty 3: Hard">Hard</button>
+						<button type="button" class="difficulty-btn" data-difficulty="4" title="Difficulty 4: Very Hard">Very Hard</button>
+						<button type="button" class="difficulty-btn" data-difficulty="5" title="Difficulty 5: Extreme (very fast)">Extreme</button>
+					</div>
+
 					<div class="game-controls" aria-label="Game actions">
 						<button type="button" id="tetris-start">Start</button>
 						<button type="button" id="tetris-pause">Pause / Resume</button>
@@ -105,20 +125,24 @@
 						<button type="button" id="tetris-sound-toggle">Sound: ON</button>
 						<button type="button" id="tetris-hard-drop">Hard drop</button>
 						<button type="button" id="tetris-reset">Reset</button>
+						<button type="button" id="tetris-help" title="Show keyboard controls (press ?)">Help</button>
 					</div>
 
-					<h3>Controls</h3>
-					<ul class="detail-list">
-						<li><span class="keycap">Left / Right</span> Move</li>
-						<li><span class="keycap">Up</span> Rotate</li>
-						<li><span class="keycap">Down</span> Soft drop</li>
-						<li><span class="keycap">C</span> Hold</li>
-						<li><span class="keycap">G</span> Toggle ghost</li>
-						<li><span class="keycap">M</span> Toggle sound</li>
-						<li><span class="keycap">Enter</span> Hard drop</li>
-						<li><span class="keycap">Space / P</span> Pause / Resume</li>
-						<li><span class="keycap">R</span> Reset board</li>
-					</ul>
+					<div class="tetris-help-panel" id="tetris-help-panel">
+						<h3>Keyboard Controls</h3>
+						<ul class="detail-list">
+							<li><span class="keycap">Left / Right</span> Move</li>
+							<li><span class="keycap">Up</span> Rotate</li>
+							<li><span class="keycap">Down</span> Soft drop</li>
+							<li><span class="keycap">C</span> Hold</li>
+							<li><span class="keycap">G</span> Toggle ghost</li>
+							<li><span class="keycap">M</span> Toggle sound</li>
+							<li><span class="keycap">Enter</span> Hard drop</li>
+							<li><span class="keycap">Space / P</span> Pause / Resume</li>
+							<li><span class="keycap">R</span> Reset board</li>
+							<li><span class="keycap">?</span> Toggle this help</li>
+						</ul>
+					</div>
 				</aside>
 			</div>
 		</section>

@@ -47,6 +47,24 @@ assert("Cols = 10", state.cols === 10);
 assert("Board har 20 rader", state.board.length === 20);
 assert("Hver rad har 10 kolonner", state.board.every((row) => row.length === 10));
 
+section("Lydprofil i config");
+assert("LINE_CLEAR_SOUND_MAX_GAIN finnes", typeof C.LINE_CLEAR_SOUND_MAX_GAIN === "number");
+assert("CLEAR_HIGHSCORES_SOUND_GAIN_SCALE finnes", typeof C.CLEAR_HIGHSCORES_SOUND_GAIN_SCALE === "number");
+assert("CANCEL_CLEAR_SOUND_MAX_GAIN finnes", typeof C.CANCEL_CLEAR_SOUND_MAX_GAIN === "number");
+assert("LEVEL_UP_SOUND_MAX_GAIN finnes", typeof C.LEVEL_UP_SOUND_MAX_GAIN === "number");
+assert("GAME_OVER_SOUND_MAX_GAIN finnes", typeof C.GAME_OVER_SOUND_MAX_GAIN === "number");
+
+section("UI-timing i config");
+assert("ROW_FLASH_MS finnes", typeof C.ROW_FLASH_MS === "number");
+assert("LINE_CLEAR_FLASH_MS finnes", typeof C.LINE_CLEAR_FLASH_MS === "number");
+assert("CLEAR_HIGHSCORES_FLASH_MS finnes", typeof C.CLEAR_HIGHSCORES_FLASH_MS === "number");
+assert("FEEDBACK_TOAST_MS finnes", typeof C.FEEDBACK_TOAST_MS === "number");
+
+section("Vanskelighetsgrader i config");
+assert("DIFFICULTY_START_LEVELS er array", Array.isArray(C.DIFFICULTY_START_LEVELS));
+assert("DIFFICULTY_START_LEVELS har minst 5 elementi", C.DIFFICULTY_START_LEVELS.length >= 5);
+assert("DEFAULT_DIFFICULTY finnes", typeof C.DEFAULT_DIFFICULTY === "number");
+
 section("Reset + spawn");
 E.resetTetrisState(state, C);
 assert("Active piece finnes", Boolean(state.activePiece));

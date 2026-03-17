@@ -17,6 +17,7 @@
 		attachClick(ui.hardDropButton, handlers.hardDrop);
 		attachClick(ui.ghostToggleButton, handlers.toggleGhost);
 		attachClick(ui.soundToggleButton, handlers.toggleSound);
+		attachClick(ui.helpButton, handlers.toggleHelp);
 		attachClick(ui.clearHighscoresButton, handlers.clearHighscores);
 		attachClick(ui.restartButton, handlers.restart);
 
@@ -39,6 +40,7 @@
 			P: handlers.pause,
 			r: handlers.reset,
 			R: handlers.reset,
+			"?": handlers.toggleHelp,
 		};
 
 		document.addEventListener("keydown", (event) => {

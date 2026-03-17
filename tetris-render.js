@@ -252,6 +252,12 @@
 
 		if (ui.pauseButton) {
 			ui.pauseButton.disabled = state.gameOver || !state.activePiece;
+			// Oppdater knapp-tekst basert pa om spillet er aktivt eller paused.
+			if (!state.running && state.activePiece && !state.gameOver) {
+				ui.pauseButton.textContent = "Resume";
+			} else {
+				ui.pauseButton.textContent = "Pause";
+			}
 		}
 
 		if (ui.resetButton) {
