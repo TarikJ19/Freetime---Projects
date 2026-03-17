@@ -5,7 +5,7 @@ const UNARY_LABELS = {
 	reciprocal: "1/x",
 };
 
-// One plain object keeps all calculator state so it is easy to inspect while learning.
+// Ett enkelt objekt holder all tilstand, så det er lettere å følge med mens man lærer.
 function createInitialState() {
 	return {
 		expression: "",
@@ -93,7 +93,7 @@ function runAction(state, ui, action, data = {}) {
 	render(state, ui);
 }
 
-// Single action router keeps button behavior in one place.
+// Ett sentralt action-punkt gjør at all knappelogikk ligger på ett sted.
 function handleAction(state, action, data) {
 	switch (action) {
 		case "append":
@@ -400,9 +400,11 @@ function appendParenthesis(expression, parenthesis) {
 }
 
 function applyPercentToExpression(expression) {
-	// Calculator-style percent:
-	// 200 + 10% -> 200 + 20
-	// 200 * 10% -> 200 * 0.1
+	// Prosent oppfører seg som på en vanlig kalkulator:
+	//   200 + 10%  -> 200 + 20   (10% av 200 = 20)
+	//   200 * 10%  -> 200 * 0.1  (10% som ren brøk)
+	// Etter + eller - betyr % "prosent av venstre side".
+	// Etter * eller / blir tallet bare delt på 100.
 	const segment = getNumberSegmentAtEnd(expression);
 	if (!segment) {
 		throw new Error("Place % after a number");
@@ -461,26 +463,24 @@ function applyUnaryAction(state, action) {
 	const value = evaluateExpression(source);
 	let result;
 
-	if (action === "square") {
-		result = value * value;
-	}
-
-	if (action === "sqrt") {
-		if (value < 0) {
-			throw new Error("Square root needs a non-negative value");
-		}
-		result = Math.sqrt(value);
-	}
-
-	if (action === "reciprocal") {
-		if (value === 0) {
-			throw new Error("Cannot divide by zero");
-		}
-		result = 1 / value;
-	}
-
-	if (result === undefined) {
-		throw new Error("Unsupported unary action");
+	switch (action) {
+		case "square":
+			result = value * value;
+			break;
+		case "sqrt":
+			if (value < 0) {
+				throw new Error("Square root needs a non-negative value");
+			}
+			result = Math.sqrt(value);
+			break;
+		case "reciprocal":
+			if (value === 0) {
+				throw new Error("Cannot divide by zero");
+			}
+			result = 1 / value;
+			break;
+		default:
+			throw new Error("Unsupported unary action");
 	}
 
 	const label = `${UNARY_LABELS[action]}(${source})`;
@@ -493,27 +493,24 @@ function applyScientificAction(state, fnName) {
 	const value = evaluateExpression(source);
 	let result;
 
-	if (fnName === "sin") {
-		result = Math.sin(value);
-	}
-
-	if (fnName === "cos") {
-		result = Math.cos(value);
-	}
-
-	if (fnName === "tan") {
-		result = Math.tan(value);
-	}
-
-	if (fnName === "log") {
-		if (value <= 0) {
-			throw new Error("log needs a value greater than zero");
-		}
-		result = Math.log10(value);
-	}
-
-	if (result === undefined) {
-		throw new Error("Unsupported scientific action");
+	switch (fnName) {
+		case "sin":
+			result = Math.sin(value);
+			break;
+		case "cos":
+			result = Math.cos(value);
+			break;
+		case "tan":
+			result = Math.tan(value);
+			break;
+		case "log":
+			if (value <= 0) {
+				throw new Error("log needs a value greater than zero");
+			}
+			result = Math.log10(value);
+			break;
+		default:
+			throw new Error("Unsupported scientific action");
 	}
 
 	const label = `${fnName}(${source})`;
@@ -636,25 +633,30 @@ function insertToken(expression, token) {
 }
 
 function evaluateExpression(expression) {
-	// We allow only calculator characters, then evaluate in strict mode.
+	// Steg 1: fjern mellomrom, så "3 + 4" blir "3+4".
 	const compact = expression.replace(/\s+/g, "");
 	if (!compact) {
 		throw new Error("Type an expression first");
 	}
 
+	// Steg 2: sikkerhetssjekk. Bare kalkulator-tegn er lov.
+	// Regexen under tillater kun sifre, +, -, *, /, ., (, ).
 	if (!/^[0-9+\-*/().]+$/.test(compact)) {
 		throw new Error("Only numbers and + - * / ( ) are allowed");
 	}
 
+	// Steg 3: lukk åpne parenteser automatisk, f.eks. "(2+3" blir "(2+3)".
 	const completed = closeOpenParentheses(compact);
 	let result;
 
 	try {
+		// Steg 4: regn ut uttrykket. "use strict" strammer inn kjøringen.
 		result = Function(`"use strict"; return (${completed});`)();
 	} catch {
 		throw new Error("Incomplete expression");
 	}
 
+	// Steg 5: stopp ugyldige resultater som Infinity eller NaN.
 	if (!Number.isFinite(result)) {
 		throw new Error("Calculation overflow");
 	}
@@ -663,6 +665,8 @@ function evaluateExpression(expression) {
 }
 
 function closeOpenParentheses(expression) {
+	// Tell hvor mange parenteser som fortsatt er åpne.
+	// depth øker med "(" og synker med ")".
 	let depth = 0;
 
 	for (const character of expression) {
@@ -678,6 +682,7 @@ function closeOpenParentheses(expression) {
 		}
 	}
 
+	// Legg til så mange ")" som mangler.
 	return `${expression}${")".repeat(depth)}`;
 }
 
@@ -700,6 +705,11 @@ function findHistoryEntry(state, rawId) {
 }
 
 function getNumberSegmentAtEnd(expression) {
+	// Finn tallet helt bakerst i uttrykket.
+	// Eksempel: "50+25" gir segmentet "25".
+	// Brukes av % og +/- for å vite hvilket tall som skal endres.
+
+	// Hopp over eventuelle mellomrom bakerst.
 	let end = expression.length;
 	while (end > 0 && expression[end - 1] === " ") {
 		end -= 1;
@@ -709,15 +719,18 @@ function getNumberSegmentAtEnd(expression) {
 		return null;
 	}
 
+	// Hvis siste tegn ikke er siffer eller punktum, finnes det ikke et slutt-tall.
 	let index = end - 1;
 	if (!/[0-9.]/.test(expression[index])) {
 		return null;
 	}
 
+	// Gå bakover for å finne starten på tallet.
 	while (index >= 0 && /[0-9.]/.test(expression[index])) {
 		index -= 1;
 	}
 
+	// Ta med ledende minus hvis den betyr negativt tall (ikke subtraksjon).
 	let start = index + 1;
 	if (index >= 0 && expression[index] === "-" && isUnaryMinus(expression, index)) {
 		start = index;
@@ -731,6 +744,8 @@ function getNumberSegmentAtEnd(expression) {
 }
 
 function findLastMainOperator(expression) {
+	// Søk baklengs etter siste operator utenfor parenteser.
+	// Brukes for å tolke prosent riktig i uttrykk som "200+10".
 	let depth = 0;
 
 	for (let index = expression.length - 1; index >= 0; index -= 1) {
@@ -792,12 +807,15 @@ function isOperator(character) {
 }
 
 function isUnaryMinus(expression, index) {
+	// "Unary minus" betyr negativt fortegn, f.eks. -5.
+	// Vanlig minus betyr subtraksjon, f.eks. 10 - 5.
+	// Regel: står minuset først, eller etter operator/"(", er det fortegn.
 	if (expression[index] !== "-") {
 		return false;
 	}
 
 	if (index === 0) {
-		return true;
+		return true; // Første tegn må være negativt fortegn.
 	}
 
 	const previous = expression[index - 1];

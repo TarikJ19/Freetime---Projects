@@ -4,7 +4,7 @@ import argparse
 import math
 import re
 
-ALLOWED_EXPRESSION = re.compile(r"^[0-9+\-*/().\s]+$")
+ALLOWED_EXPRESSION = re.compile(r"[0-9+\-*/().\s]+")
 
 
 class CalculatorError(ValueError):
@@ -20,6 +20,7 @@ def format_number(value: float) -> str:
 
 
 def close_open_parentheses(expression: str) -> str:
+    # Tell åpne parenteser. Resten lukkes automatisk til slutt.
     depth = 0
 
     for character in expression:
@@ -34,11 +35,13 @@ def close_open_parentheses(expression: str) -> str:
 
 
 def evaluate_expression(expression: str) -> float:
+    # Fjern mellomrom for å gjøre sjekk og utregning enklere.
     compact = expression.replace(" ", "")
     if not compact:
         raise CalculatorError("Type an expression first")
 
-    if not ALLOWED_EXPRESSION.match(compact):
+    # Tillat bare kalkulatortegn: sifre, operatorer, punktum og parenteser.
+    if not ALLOWED_EXPRESSION.fullmatch(compact):
         raise CalculatorError("Only numbers and + - * / ( ) are allowed")
 
     completed = close_open_parentheses(compact)
@@ -64,29 +67,29 @@ def apply_action(expression: str, action: str) -> float:
     if action == "evaluate":
         return value
 
-    if action == "square":
+    elif action == "square":
         return value * value
 
-    if action == "sqrt":
+    elif action == "sqrt":
         if value < 0:
             raise CalculatorError("Square root needs a non-negative value")
         return math.sqrt(value)
 
-    if action == "reciprocal":
+    elif action == "reciprocal":
         if value == 0:
             raise CalculatorError("Cannot divide by zero")
         return 1 / value
 
-    if action == "sin":
+    elif action == "sin":
         return math.sin(value)
 
-    if action == "cos":
+    elif action == "cos":
         return math.cos(value)
 
-    if action == "tan":
+    elif action == "tan":
         return math.tan(value)
 
-    if action == "log":
+    elif action == "log":
         if value <= 0:
             raise CalculatorError("log needs a value greater than zero")
         return math.log10(value)
