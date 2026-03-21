@@ -138,6 +138,13 @@ assert(
 	/\.tetris-overlay\.is-hidden\s*\{[^}]*display\s*:\s*none\s*;[^}]*\}/m.test(sharedStyles)
 );
 
+section("Preview-farger (regresjon)");
+assert(
+	"shared/styles.css har filled-regler for mini-grid",
+	/\.mini-grid\s+span\.filled-a\s*\{[^}]*\}/m.test(sharedStyles) &&
+		/\.mini-grid\s+span\.filled-g\s*\{[^}]*\}/m.test(sharedStyles)
+);
+
 section("Overlay-rendering (UI-kontrakt)");
 const overlayState = E.createInitialTetrisState(C);
 E.resetTetrisState(overlayState, C);

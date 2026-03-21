@@ -155,6 +155,10 @@
 	}
 
 	function renderNextPiece(state, ui, config) {
+		const nextPieceName = state.nextPiece ? state.nextPiece.name : "";
+		const canPulseBadge =
+			ui.nextPieceBadge && ui.hasRenderedNextPieceOnce && nextPieceName && nextPieceName !== ui.lastRenderedNextPieceName;
+
 		const preview = buildNextPreviewMatrix(state.nextPiece, config.PREVIEW_SIZE);
 
 		for (let row = 0; row < config.PREVIEW_SIZE; row += 1) {
@@ -164,12 +168,39 @@
 				ui.previewCells[index].className = className || "";
 			}
 		}
+
+		// Puls kun nar "next" faktisk byttes etter forste render.
+		if (canPulseBadge) {
+			ui.nextPieceBadge.classList.remove("is-pulse");
+			void ui.nextPieceBadge.offsetWidth;
+			ui.nextPieceBadge.classList.add("is-pulse");
+
+			if (ui.nextPieceBadgePulseTimeoutId) {
+				window.clearTimeout(ui.nextPieceBadgePulseTimeoutId);
+			}
+
+			ui.nextPieceBadgePulseTimeoutId = window.setTimeout(() => {
+				if (!ui.nextPieceBadge) {
+					return;
+				}
+
+				ui.nextPieceBadge.classList.remove("is-pulse");
+				ui.nextPieceBadgePulseTimeoutId = 0;
+			}, 420);
+		}
+
+		ui.lastRenderedNextPieceName = nextPieceName;
+		ui.hasRenderedNextPieceOnce = true;
 	}
 
 	function renderHoldPiece(state, ui, config) {
 		if (!ui.holdCells) {
 			return;
 		}
+
+		const holdPieceName = state.holdPiece ? state.holdPiece.name : "";
+		const canPulseBadge =
+			ui.holdPieceBadge && ui.hasRenderedHoldPieceOnce && holdPieceName && holdPieceName !== ui.lastRenderedHoldPieceName;
 
 		const preview = buildNextPreviewMatrix(state.holdPiece, config.PREVIEW_SIZE);
 
@@ -180,6 +211,48 @@
 				ui.holdCells[index].className = className || "";
 			}
 		}
+
+		// Puls kun nar hold-brikken faktisk endres etter forste render.
+		if (canPulseBadge) {
+			ui.holdPieceBadge.classList.remove("is-pulse");
+			void ui.holdPieceBadge.offsetWidth;
+			ui.holdPieceBadge.classList.add("is-pulse");
+
+			if (ui.holdPiece) {
+				ui.holdPiece.classList.remove("is-hold-flash");
+				void ui.holdPiece.offsetWidth;
+				ui.holdPiece.classList.add("is-hold-flash");
+
+				if (ui.holdPieceFlashTimeoutId) {
+					window.clearTimeout(ui.holdPieceFlashTimeoutId);
+				}
+
+				ui.holdPieceFlashTimeoutId = window.setTimeout(() => {
+					if (!ui.holdPiece) {
+						return;
+					}
+
+					ui.holdPiece.classList.remove("is-hold-flash");
+					ui.holdPieceFlashTimeoutId = 0;
+				}, 360);
+			}
+
+			if (ui.holdPieceBadgePulseTimeoutId) {
+				window.clearTimeout(ui.holdPieceBadgePulseTimeoutId);
+			}
+
+			ui.holdPieceBadgePulseTimeoutId = window.setTimeout(() => {
+				if (!ui.holdPieceBadge) {
+					return;
+				}
+
+				ui.holdPieceBadge.classList.remove("is-pulse");
+				ui.holdPieceBadgePulseTimeoutId = 0;
+			}, 360);
+		}
+
+		ui.lastRenderedHoldPieceName = holdPieceName;
+		ui.hasRenderedHoldPieceOnce = true;
 	}
 
 	function renderHoldHint(state, ui) {

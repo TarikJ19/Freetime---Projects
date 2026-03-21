@@ -25,6 +25,8 @@ body.page-calendar {
 body.page-game {
     --page-accent: #9d84d8;
     --page-wash: rgba(214, 201, 248, 0.34);
+    /* 1 = normal, 0.6 = svakere, 1.4 = sterkere preview-puls/flash. */
+    --tetris-preview-pulse-strength: 1;
 }
 
 * {
@@ -1149,6 +1151,81 @@ main {
     background: rgba(242, 220, 171, 0.35);
 }
 
+.tetris-preview-badge {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0.12rem 0.44rem;
+    border-radius: 999px;
+    border: 1px solid rgba(53, 39, 28, 0.28);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    color: #fff8ef;
+    background: rgba(33, 28, 24, 0.82);
+}
+
+.tetris-preview-badge.hold {
+    background: linear-gradient(135deg, #3c6f9f 0%, #244f75 100%);
+    border-color: rgba(36, 79, 117, 0.72);
+}
+
+.tetris-preview-badge.hold.is-pulse {
+    animation: tetrisHoldBadgePulse 330ms ease-out;
+}
+
+@keyframes tetrisHoldBadgePulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(133, 197, 255, calc(0.36 * var(--tetris-preview-pulse-strength)));
+    }
+
+    45% {
+        transform: scale(calc(1 + 0.06 * var(--tetris-preview-pulse-strength)));
+        box-shadow: 0 0 0 calc(5px * var(--tetris-preview-pulse-strength)) rgba(133, 197, 255, calc(0.18 * var(--tetris-preview-pulse-strength)));
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(133, 197, 255, 0);
+    }
+}
+
+.tetris-preview-badge.next {
+    background: linear-gradient(135deg, #8a5b24 0%, #6e4418 100%);
+    border-color: rgba(110, 68, 24, 0.72);
+}
+
+.tetris-preview-badge.next.is-pulse {
+    animation: tetrisNextBadgePulse 380ms ease-out;
+}
+
+@keyframes tetrisNextBadgePulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 206, 143, calc(0.45 * var(--tetris-preview-pulse-strength)));
+    }
+
+    45% {
+        transform: scale(calc(1 + 0.08 * var(--tetris-preview-pulse-strength)));
+        box-shadow: 0 0 0 calc(6px * var(--tetris-preview-pulse-strength)) rgba(255, 206, 143, calc(0.22 * var(--tetris-preview-pulse-strength)));
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 206, 143, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mini-grid.is-hold-flash,
+    .tetris-preview-badge.hold.is-pulse,
+    .tetris-preview-badge.next.is-pulse {
+        animation: none;
+    }
+}
+
 #tetris-start,
 #tetris-hold,
 #tetris-hard-drop {
@@ -1484,13 +1561,76 @@ main {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.2rem;
     width: min(100%, 140px);
+    padding: 0.45rem;
+    border: 1px solid rgba(33, 28, 24, 0.22);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(244, 232, 214, 0.72) 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44);
     margin-bottom: 1.1rem;
 }
 
 .mini-grid span {
     aspect-ratio: 1;
     border-radius: 4px;
+    border: 1px solid rgba(33, 28, 24, 0.12);
     background: rgba(33, 28, 24, 0.12);
+}
+.mini-grid.is-hold-flash {
+    animation: tetrisHoldGridFlash 340ms ease-out;
+}
+
+@keyframes tetrisHoldGridFlash {
+    0% {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44);
+        filter: brightness(1);
+    }
+
+    45% {
+        box-shadow: inset 0 0 0 calc(2px * var(--tetris-preview-pulse-strength)) rgba(133, 197, 255, calc(0.55 * var(--tetris-preview-pulse-strength))), 0 0 0 calc(2px * var(--tetris-preview-pulse-strength)) rgba(133, 197, 255, calc(0.2 * var(--tetris-preview-pulse-strength)));
+        filter: brightness(calc(1 + 0.07 * var(--tetris-preview-pulse-strength)));
+    }
+
+    100% {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44);
+        filter: brightness(1);
+    }
+}
+
+#tetris-hold-piece {
+    margin-bottom: 0.55rem;
+}
+
+#tetris-next-piece {
+    margin-bottom: 0.95rem;
+}
+
+/* Preview-celler trenger egne filled-regler fordi .mini-grid span ellers overstyrer fargen. */
+.mini-grid span.filled-a {
+    background: #4bc3d4;
+}
+
+.mini-grid span.filled-b {
+    background: #f08f3f;
+}
+
+.mini-grid span.filled-c {
+    background: #6cb564;
+}
+
+.mini-grid span.filled-d {
+    background: #d264c5;
+}
+
+.mini-grid span.filled-e {
+    background: #e5c34a;
+}
+
+.mini-grid span.filled-f {
+    background: #5e79dd;
+}
+
+.mini-grid span.filled-g {
+    background: #d75c70;
 }
 
 .site-footer {
@@ -1621,5 +1761,15 @@ main {
 
     .difficulty-selector {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tetris-preview-badge {
+        margin-bottom: 0.25rem;
+    }
+
+    .mini-grid {
+        width: min(100%, 170px);
+        gap: 0.23rem;
+        padding: 0.5rem;
     }
 }
