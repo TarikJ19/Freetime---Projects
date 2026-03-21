@@ -1,6 +1,6 @@
 /**
  * tetris-smoke.js
- * Kjor med: node tetris-smoke.js
+ * Kjor med: node tests/tetris-smoke.js
  * Tester grunnlogikk i Tetris-motoren.
  */
 
@@ -34,8 +34,8 @@ const sandbox = {
 sandbox.window = sandbox;
 
 vm.createContext(sandbox);
-vm.runInContext(fs.readFileSync("tetris-config.js", "utf8"), sandbox);
-vm.runInContext(fs.readFileSync("tetris-engine.js", "utf8"), sandbox);
+vm.runInContext(fs.readFileSync("projects/project3-tetris/tetris-config.js", "utf8"), sandbox);
+vm.runInContext(fs.readFileSync("projects/project3-tetris/tetris-engine.js", "utf8"), sandbox);
 
 const C = sandbox.TetrisConfig;
 const E = sandbox.TetrisEngine;

@@ -29,23 +29,23 @@ These badges are now visible on the homepage and each project page.
 ## Repository structure
 
 - `index.html` - Homepage with project cards
-- `project1.html` - Advanced Calculator page
-- `project2.html` - Advanced Calendar page
-- `project3.html` - Tetris Game page
-- `calculator.js` - Dedicated JavaScript logic for Project 1 (calculator)
-- `calendar.js` - Dedicated JavaScript logic for Project 2 (calendar)
-- `tetris-config.js` - Shared Tetris constants, speed rules, and piece templates
-- `tetris-engine.js` - Pure Tetris game logic (board, movement, collision, scoring)
-- `tetris-render.js` - DOM rendering for board, next piece, and stats
-- `tetris-controls.js` - Keyboard/button input wiring for Tetris
-- `tetris.js` - Tetris page entry point that connects modules together
+- `projects/project1-calculator/project1.html` - Advanced Calculator page
+- `projects/project1-calculator/calculator.js` - Dedicated JavaScript logic for Project 1 (calculator)
+- `projects/project2-calendar/project2.html` - Advanced Calendar page
+- `projects/project2-calendar/calendar.js` - Dedicated JavaScript logic for Project 2 (calendar)
+- `projects/project3-tetris/project3.html` - Tetris Game page
+- `projects/project3-tetris/tetris-config.js` - Shared Tetris constants, speed rules, and piece templates
+- `projects/project3-tetris/tetris-engine.js` - Pure Tetris game logic (board, movement, collision, scoring)
+- `projects/project3-tetris/tetris-render.js` - DOM rendering for board, next piece, and stats
+- `projects/project3-tetris/tetris-controls.js` - Keyboard/button input wiring for Tetris
+- `projects/project3-tetris/tetris.js` - Tetris page entry point that connects modules together
 - `script.js` - Legacy pointer file kept for history/transition
 - `script.py` - Python reference calculator engine for reviewing the same expression logic outside the browser
 - `server.js` - Simple local Node.js server for running the site on localhost
-- `smoke-test.js` - Combined smoke tests for calculator and calendar logic
-- `tetris-smoke.js` - Smoke tests for Tetris engine start-phase logic
+- `tests/smoke-test.js` - Combined smoke tests for calculator and calendar logic
+- `tests/tetris-smoke.js` - Smoke tests for Tetris engine start-phase logic
 - `package.json` - Optional npm scripts for local server and smoke tests
-- `styles.css` - Shared design system used by all pages
+- `shared/styles.css` - Shared design system used by all pages
 - `assets/previews/calculator-preview.svg` - Visual preview image for implemented calculator milestone
 
 ## Run locally
@@ -87,8 +87,8 @@ Then open `http://localhost:3000`.
 Run core smoke tests directly:
 
 ```bash
-node smoke-test.js
-node tetris-smoke.js
+node tests/smoke-test.js
+node tests/tetris-smoke.js
 ```
 
 ### Optional npm scripts
@@ -100,7 +100,7 @@ npm test
 npm start
 ```
 
-`npm test` runs both smoke suites (`smoke-test.js` + `tetris-smoke.js`) and `npm start` runs `node server.js`.
+`npm test` runs both smoke suites (`tests/smoke-test.js` + `tests/tetris-smoke.js`) and `npm start` runs `node server.js`.
 
 ## Optional tools
 
@@ -159,7 +159,7 @@ python script.py --action log "1000"
   - Node.js local server included (`server.js`) for localhost workflow.
   - Tetris moved from planning shell to playable start phase (spawn, move, rotate, soft drop, pause, reset).
   - Tetris code split into beginner-friendly modules (`tetris-config.js`, `tetris-engine.js`, `tetris-render.js`, `tetris-controls.js`, `tetris.js`).
-  - Added Tetris smoke tests (`tetris-smoke.js`) and included them in `npm test`.
+  - Added Tetris smoke tests (`tests/tetris-smoke.js`) and included them in `npm test`.
   - Tetris phase 2 added: hard drop action, game-over overlay, restart button flow, and smoother level-speed curve.
   - Added hold piece system (single-use per turn) and ghost-piece landing preview.
   - Added small soft-drop score bonus and updated control panel hints.

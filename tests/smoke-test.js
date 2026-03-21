@@ -1,6 +1,6 @@
 /**
  * smoke-test.js
- * Kjoer med: node smoke-test.js
+ * Kjoer med: node tests/smoke-test.js
  * Tester kjernefunksjonalitet for bade kalkulator og kalender.
  */
 
@@ -72,7 +72,7 @@ const docMock = {
 
 // ─── Last kalkulator-kode i sandbox ────────────────────────────────────────────
 
-const calcCode = fs.readFileSync("calculator.js", "utf8");
+const calcCode = fs.readFileSync("projects/project1-calculator/calculator.js", "utf8");
 const calcSandbox = { console, document: docMock, localStorage: lsMock, setTimeout, clearTimeout };
 vm.createContext(calcSandbox);
 vm.runInContext(
@@ -241,7 +241,7 @@ assert("Ukjent 'q' -> null",       C.getKeyboardAction("q") === null);
 
 // ─── Last kalender-kode i sandbox ─────────────────────────────────────────────
 
-const calCode = fs.readFileSync("calendar.js", "utf8");
+const calCode = fs.readFileSync("projects/project2-calendar/calendar.js", "utf8");
 const calSandbox = {
 	console, document: docMock, localStorage: lsMock,
 	FileReader: MockFileReader,

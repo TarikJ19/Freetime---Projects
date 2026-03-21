@@ -5,7 +5,7 @@
   "description": "Static portfolio projects with calculator, calendar, and tetris.",
   "scripts": {
     "start": "node server.js",
-    "test": "node smoke-test.js && node tetris-smoke.js",
-    "test:tetris": "node tetris-smoke.js"
+    "test": "node tests/smoke-test.js && node tests/tetris-smoke.js",
+    "test:tetris": "node tests/tetris-smoke.js"
   }
 }
