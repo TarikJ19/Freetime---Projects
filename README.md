@@ -145,6 +145,16 @@ python script.py --action log "1000"
 
 ## Changelog
 
+- 2026-03-21
+  - Fixed Tetris hold/next preview visibility bug caused by CSS specificity in mini-grid cells.
+  - Added regression coverage in `tests/tetris-smoke.js` to catch missing preview color rules.
+  - Improved hold/next panel readability with clearer preview framing and better mobile spacing.
+  - Added `HOLD` and `UP NEXT` preview badges in the Tetris side panel.
+  - Added subtle pulse animation on `UP NEXT` badge when next piece changes.
+  - Added subtle pulse animation on `HOLD` badge when hold piece changes.
+  - Added small hold mini-grid flash when hold piece updates.
+  - Added a single CSS tuning variable for preview effect intensity (`--tetris-preview-pulse-strength`).
+
 - 2026-03-17
   - Calculator functionality extended and simplified for beginner-friendly flow.
   - History controls now include pin, clear, load, and single-entry remove.
@@ -174,4 +184,4 @@ python script.py --action log "1000"
 
 ---
 
-_Last updated: 2026-03-17_
+_Last updated: 2026-03-21_
