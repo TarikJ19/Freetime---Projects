@@ -122,6 +122,8 @@ function initTetrisPage() {
 	let previousGameOver = false;
 	// Vanskelighetsgrad lastes fra localStorage (eller bruk default).
 	let selectedDifficulty = loadStoredDifficulty();
+	// Denne er true mellom reset og forste Start i en ny runde.
+	let isAwaitingRoundStart = true;
 
 	const playLineClearSoundStub = createLineClearSoundStub();
 	const playClearHighscoresSound = createClearHighscoresSoundStub();
@@ -692,6 +694,19 @@ function initTetrisPage() {
 		return state.running && !state.gameOver;
 	}
 
+	function applySelectedDifficultyToRound() {
+		const startLevel = DIFFICULTY_START_LEVELS[selectedDifficulty - 1];
+		if (typeof startLevel !== "number" || startLevel <= 0) {
+			return;
+		}
+
+		state.level = startLevel;
+		// Beregn drop-intervall basert pa niva (samme formel som engine).
+		const curveFactor = typeof config.DROP_CURVE_FACTOR === "number" ? config.DROP_CURVE_FACTOR : 0.88;
+		const speed = Math.round(config.BASE_DROP_MS * Math.pow(curveFactor, state.level - 1));
+		state.dropIntervalMs = Math.max(config.MIN_DROP_MS, speed);
+	}
+
 	function runActiveAction(action) {
 		// Reduserer repetisjon i venstre/hoyre/roter/hold-handlere.
 		if (!isRoundActive()) {
@@ -709,16 +724,13 @@ function initTetrisPage() {
 
 		if (state.gameOver || !state.activePiece) {
 			engine.resetTetrisState(state, config);
-			// Anvend valgt vanskelighetsgrad som start-level.
-			const startLevel = DIFFICULTY_START_LEVELS[selectedDifficulty - 1];
-			if (typeof startLevel === "number" && startLevel > 0) {
-				state.level = startLevel;
-				// Beregn drop-intervall basert pa niva (same formel som engine).
-				const curveFactor = typeof config.DROP_CURVE_FACTOR === "number" ? config.DROP_CURVE_FACTOR : 0.88;
-				const speed = Math.round(config.BASE_DROP_MS * Math.pow(curveFactor, state.level - 1));
-				state.dropIntervalMs = Math.max(config.MIN_DROP_MS, speed);
-			}
+			isAwaitingRoundStart = true;
 			markRoundStart();
+		}
+
+		if (isAwaitingRoundStart) {
+			applySelectedDifficultyToRound();
+			isAwaitingRoundStart = false;
 		}
 
 		state.running = true;
@@ -736,6 +748,8 @@ function initTetrisPage() {
 
 	function resetGame() {
 		engine.resetTetrisState(state, config);
+		isAwaitingRoundStart = true;
+		applySelectedDifficultyToRound();
 		markRoundStart();
 		state.running = false;
 		renderAll();
@@ -744,6 +758,9 @@ function initTetrisPage() {
 	function restartGame() {
 		// Restart fra overlay skal starte en ny runde umiddelbart.
 		engine.resetTetrisState(state, config);
+		isAwaitingRoundStart = true;
+		applySelectedDifficultyToRound();
+		isAwaitingRoundStart = false;
 		markRoundStart();
 		state.running = true;
 		renderAll();

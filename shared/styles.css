@@ -668,9 +668,18 @@ main {
     border-color: rgba(53, 39, 28, 0.28);
 }
 
+.day-cell.is-red-day > p {
+    color: #b42828;
+}
+
 .day-cell.is-today {
-    border-color: rgba(31, 122, 87, 0.6);
-    box-shadow: inset 0 0 0 1px rgba(31, 122, 87, 0.38);
+    border-color: rgba(31, 122, 87, 0.75);
+    background: rgba(31, 122, 87, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(31, 122, 87, 0.42);
+}
+
+.day-cell.is-today > p {
+    color: #166147;
 }
 
 .day-cell.is-selected {
@@ -745,6 +754,15 @@ main {
 .calendar-panel h3,
 .calendar-panel p {
     margin: 0;
+}
+
+.calendar-day-meaning {
+    padding: 0.55rem 0.65rem;
+    border: 1px solid rgba(53, 39, 28, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.62);
+    color: var(--muted);
+    font-size: 0.88rem;
 }
 
 .calendar-form {
@@ -998,6 +1016,10 @@ main {
     color: #fff8ef;
     background: rgba(19, 15, 12, 0.78);
     backdrop-filter: blur(2px);
+}
+
+.tetris-overlay.is-hidden {
+    display: none;
 }
 
 .tetris-overlay h3 {
@@ -1337,10 +1359,10 @@ main {
     color: #8a5a12;
 }
 
-/* Vanskelighetsvelger: gruppe med 5 knapper for start-hastighet. */
+/* Vanskelighetsvelger: responsiv grid som unngar overlop i smale sidepanel. */
 .difficulty-selector {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
     gap: 0.4rem;
     margin: 0.8rem 0 1rem;
 }
@@ -1353,6 +1375,7 @@ main {
     color: var(--text);
     font: inherit;
     font-size: 0.85rem;
+    line-height: 1.2;
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -1594,5 +1617,9 @@ main {
 
     .calendar-form-row {
         grid-template-columns: 1fr;
+    }
+
+    .difficulty-selector {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

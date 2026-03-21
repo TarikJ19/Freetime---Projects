@@ -41,6 +41,7 @@ function initCalendarPage() {
 		weekdayRow: document.getElementById("calendar-weekdays"),
 		grid: document.getElementById("calendar-grid"),
 		selectedDate: document.getElementById("calendar-selected-date"),
+		dayMeaning: document.getElementById("calendar-day-meaning"),
 		eventForm: document.getElementById("calendar-event-form"),
 		eventInput: document.getElementById("calendar-event-input"),
 		eventDateInput: document.getElementById("calendar-event-date"),
@@ -69,6 +70,7 @@ function initCalendarPage() {
 		!ui.weekdayRow ||
 		!ui.grid ||
 		!ui.selectedDate ||
+		!ui.dayMeaning ||
 		!ui.eventForm ||
 		!ui.eventInput ||
 		!ui.eventDateInput ||
@@ -290,6 +292,7 @@ function renderCalendarPage(state, ui) {
 	// En felles render-flyt holder UI i sync etter hver state-endring.
 	renderCalendarToolbarState(state, ui);
 	renderCalendarGrid(state, ui);
+	renderCalendarDayMeaning(state, ui);
 	renderCalendarEventPanel(state, ui);
 	renderCalendarFormState(state, ui);
 	renderCalendarUpcomingPanel(state, ui);
@@ -322,6 +325,7 @@ function renderCalendarGrid(state, ui) {
 	ui.grid.replaceChildren();
 
 	const filters = createCalendarFilters(state);
+	const holidayNameByDateKey = getNorwegianPublicHolidayNameMapForDates(dates);
 
 	for (const date of dates) {
 		const dateKey = toDateKey(date);
@@ -349,6 +353,10 @@ function renderCalendarGrid(state, ui) {
 			dayButton.classList.add("has-event");
 		}
 
+		if (date.getDay() === 0 || holidayNameByDateKey.has(dateKey)) {
+			dayButton.classList.add("is-red-day");
+		}
+
 		if (state.viewMode === "day" || state.viewMode === "week") {
 			const dayName = document.createElement("small");
 			dayName.className = "day-name";
@@ -373,9 +381,41 @@ function renderCalendarGrid(state, ui) {
 	}
 }
 
+function renderCalendarDayMeaning(state, ui) {
+	const selectedDate = fromDateKey(state.selectedDateKey);
+	const selectedKey = toDateKey(selectedDate);
+	const details = [];
+
+	if (selectedKey === state.todayKey) {
+		details.push("I dag");
+	}
+
+	if (selectedDate.getDay() === 0) {
+		details.push("Søndag");
+	}
+
+	const holidayName = getNorwegianHolidayNameForDateKey(selectedKey);
+	if (holidayName) {
+		details.push(`Helligdag: ${holidayName}`);
+	}
+
+	const schoolBreakName = getFredrikstadSchoolBreakNameForDate(selectedDate);
+	if (schoolBreakName) {
+		details.push(`Skoleferie: ${schoolBreakName}`);
+	}
+
+	if (selectedDate.getMonth() === 11 && selectedDate.getDate() === 24) {
+		details.push("Merkedag: Julaften");
+	}
+
+	ui.dayMeaning.textContent = details.length
+		? `Denne dagen: ${details.join(" | ")}`
+		: "Denne dagen: Ingen spesialmarkering.";
+}
+
 function renderCalendarEventPanel(state, ui) {
 	const selectedDate = fromDateKey(state.selectedDateKey);
-	ui.selectedDate.textContent = `Selected date: ${formatCalendarLongDate(selectedDate)}`;
+	ui.selectedDate.textContent = `Valgt dato: ${formatCalendarLongDate(selectedDate)}`;
 
 	ui.eventList.replaceChildren();
 
@@ -1070,6 +1110,153 @@ function formatCalendarLongDate(date) {
 	const dayName = CALENDAR_DAY_NAMES[date.getDay()];
 	const monthName = CALENDAR_MONTH_NAMES[date.getMonth()];
 	return `${dayName}, ${monthName} ${date.getDate()}, ${date.getFullYear()}`;
+}
+
+function getNorwegianPublicHolidayNameMapForDates(dates) {
+	// Samle navngitte helligdager for alle aar i den aktive visningen.
+	const years = new Set(dates.map((date) => date.getFullYear()));
+	const nameByDateKey = new Map();
+
+	for (const year of years) {
+		const holidayMap = getNorwegianPublicHolidayNameMapForYear(year);
+		for (const [dateKey, name] of holidayMap.entries()) {
+			nameByDateKey.set(dateKey, name);
+		}
+	}
+
+	return nameByDateKey;
+}
+
+function getNorwegianPublicHolidayNameMapForYear(year) {
+	// Norske offentlige helligdager (gjelder ogsa Fredrikstad).
+	const easterSunday = computeEasterDate(year);
+	const holidays = new Map();
+
+	const fixedHolidays = [
+		{ date: new Date(year, 0, 1), name: "Forste nyttarsdag" },
+		{ date: new Date(year, 4, 1), name: "Arbeidernes dag" },
+		{ date: new Date(year, 4, 17), name: "Nasjonaldag" },
+		{ date: new Date(year, 11, 25), name: "Forste juledag" },
+		{ date: new Date(year, 11, 26), name: "Andre juledag" },
+	];
+
+	const easterBasedHolidays = [
+		{ date: addDays(easterSunday, -3), name: "Skjaertorsdag" },
+		{ date: addDays(easterSunday, -2), name: "Langfredag" },
+		{ date: addDays(easterSunday, 0), name: "Forste paskedag" },
+		{ date: addDays(easterSunday, 1), name: "Andre paskedag" },
+		{ date: addDays(easterSunday, 39), name: "Kristi himmelfartsdag" },
+		{ date: addDays(easterSunday, 49), name: "Forste pinsedag" },
+		{ date: addDays(easterSunday, 50), name: "Andre pinsedag" },
+	];
+
+	for (const entry of [...fixedHolidays, ...easterBasedHolidays]) {
+		holidays.set(toDateKey(stripTimeFromDate(entry.date)), entry.name);
+	}
+
+	return holidays;
+}
+
+function getNorwegianHolidayNameForDateKey(dateKey) {
+	const [yearText] = dateKey.split("-");
+	const year = Number(yearText);
+
+	if (!Number.isInteger(year)) {
+		return "";
+	}
+
+	const holidayMap = getNorwegianPublicHolidayNameMapForYear(year);
+	return holidayMap.get(dateKey) || "";
+}
+
+function getFredrikstadSchoolBreakNameForDate(date) {
+	const year = date.getFullYear();
+	const periods = [
+		...getFredrikstadSchoolBreakPeriods(year - 1),
+		...getFredrikstadSchoolBreakPeriods(year),
+	];
+
+	for (const period of periods) {
+		if (isDateWithinRange(date, period.startDate, period.endDate)) {
+			return period.name;
+		}
+	}
+
+	return "";
+}
+
+function getFredrikstadSchoolBreakPeriods(year) {
+	const easterSunday = computeEasterDate(year);
+
+	// Fredrikstad skoleferier (kan justeres per skolear ved behov).
+	return [
+		{
+			name: "Vinterferie",
+			startDate: getDateFromIsoWeek(year, 8, 1),
+			endDate: getDateFromIsoWeek(year, 8, 5),
+		},
+		{
+			name: "Paskeferie",
+			startDate: addDays(easterSunday, -6),
+			endDate: addDays(easterSunday, 1),
+		},
+		{
+			name: "Sommerferie",
+			startDate: new Date(year, 5, 20),
+			endDate: new Date(year, 7, 16),
+		},
+		{
+			name: "Hostferie",
+			startDate: getDateFromIsoWeek(year, 40, 1),
+			endDate: getDateFromIsoWeek(year, 40, 5),
+		},
+		{
+			name: "Juleferie",
+			startDate: new Date(year, 11, 24),
+			endDate: new Date(year + 1, 0, 1),
+		},
+	];
+}
+
+function getDateFromIsoWeek(year, weekNumber, isoDay) {
+	const januaryFourth = new Date(year, 0, 4);
+	const januaryFourthIsoDay = januaryFourth.getDay() === 0 ? 7 : januaryFourth.getDay();
+	const weekOneMonday = addDays(januaryFourth, 1 - januaryFourthIsoDay);
+	const dayOffset = (weekNumber - 1) * 7 + (isoDay - 1);
+
+	return addDays(weekOneMonday, dayOffset);
+}
+
+function isDateWithinRange(date, startDate, endDate) {
+	const normalizedDate = stripTimeFromDate(date).getTime();
+	const normalizedStart = stripTimeFromDate(startDate).getTime();
+	const normalizedEnd = stripTimeFromDate(endDate).getTime();
+
+	return normalizedDate >= normalizedStart && normalizedDate <= normalizedEnd;
+}
+
+function computeEasterDate(year) {
+	// Meeus/Jones/Butcher-algoritmen for gregoriansk paaske.
+	const a = year % 19;
+	const b = Math.floor(year / 100);
+	const c = year % 100;
+	const d = Math.floor(b / 4);
+	const e = b % 4;
+	const f = Math.floor((b + 8) / 25);
+	const g = Math.floor((b - f + 1) / 3);
+	const h = (19 * a + b - d - g + 15) % 30;
+	const i = Math.floor(c / 4);
+	const k = c % 4;
+	const l = (32 + 2 * e + 2 * i - h - k) % 7;
+	const m = Math.floor((a + 11 * h + 22 * l) / 451);
+	const month = Math.floor((h + l - 7 * m + 114) / 31);
+	const day = ((h + l - 7 * m + 114) % 31) + 1;
+
+	return new Date(year, month - 1, day);
+}
+
+function addDays(date, days) {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
 }
 
 function toDateKey(date) {

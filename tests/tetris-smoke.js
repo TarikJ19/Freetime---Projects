@@ -26,6 +26,53 @@ function assert(name, condition) {
 	}
 }
 
+function makeClassList() {
+	const classes = new Set();
+	return {
+		add(...names) {
+			for (const name of names) {
+				classes.add(name);
+			}
+		},
+		remove(...names) {
+			for (const name of names) {
+				classes.delete(name);
+			}
+		},
+		toggle(name, force) {
+			if (typeof force === "boolean") {
+				if (force) {
+					classes.add(name);
+				} else {
+					classes.delete(name);
+				}
+				return classes.has(name);
+			}
+
+			if (classes.has(name)) {
+				classes.delete(name);
+				return false;
+			}
+
+			classes.add(name);
+			return true;
+		},
+		contains(name) {
+			return classes.has(name);
+		},
+	};
+}
+
+function makeUiElement() {
+	return {
+		textContent: "",
+		disabled: false,
+		className: "",
+		classList: makeClassList(),
+		setAttribute() {},
+	};
+}
+
 // Enkel sandbox som etterligner window-global i browser.
 const sandbox = {
 	console,
@@ -36,9 +83,12 @@ sandbox.window = sandbox;
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync("projects/project3-tetris/tetris-config.js", "utf8"), sandbox);
 vm.runInContext(fs.readFileSync("projects/project3-tetris/tetris-engine.js", "utf8"), sandbox);
+vm.runInContext(fs.readFileSync("projects/project3-tetris/tetris-render.js", "utf8"), sandbox);
 
 const C = sandbox.TetrisConfig;
 const E = sandbox.TetrisEngine;
+const R = sandbox.TetrisRenderer;
+const sharedStyles = fs.readFileSync("shared/styles.css", "utf8");
 
 section("State-opprettelse");
 const state = E.createInitialTetrisState(C);
@@ -62,8 +112,73 @@ assert("FEEDBACK_TOAST_MS finnes", typeof C.FEEDBACK_TOAST_MS === "number");
 
 section("Vanskelighetsgrader i config");
 assert("DIFFICULTY_START_LEVELS er array", Array.isArray(C.DIFFICULTY_START_LEVELS));
-assert("DIFFICULTY_START_LEVELS har minst 5 elementi", C.DIFFICULTY_START_LEVELS.length >= 5);
+assert("DIFFICULTY_START_LEVELS har minst 5 elementer", C.DIFFICULTY_START_LEVELS.length >= 5);
 assert("DEFAULT_DIFFICULTY finnes", typeof C.DEFAULT_DIFFICULTY === "number");
+assert(
+	"DEFAULT_DIFFICULTY er innenfor tilgjengelige niva",
+	C.DEFAULT_DIFFICULTY >= 1 && C.DEFAULT_DIFFICULTY <= C.DIFFICULTY_START_LEVELS.length
+);
+assert(
+	"Alle difficulty-niva er positive tall",
+	C.DIFFICULTY_START_LEVELS.every((level) => typeof level === "number" && Number.isFinite(level) && level > 0)
+);
+assert(
+	"Difficulty-niva er ikke synkende",
+	C.DIFFICULTY_START_LEVELS.every((level, index, levels) => index === 0 || level >= levels[index - 1])
+);
+
+section("Overlay-synlighet (regresjon)");
+// Sikrer at game-over overlay kan skjules i starttilstand.
+assert(
+	"shared/styles.css har .tetris-overlay.is-hidden",
+	/\.tetris-overlay\.is-hidden\s*\{[^}]*\}/m.test(sharedStyles)
+);
+assert(
+	".tetris-overlay.is-hidden setter display: none",
+	/\.tetris-overlay\.is-hidden\s*\{[^}]*display\s*:\s*none\s*;[^}]*\}/m.test(sharedStyles)
+);
+
+section("Overlay-rendering (UI-kontrakt)");
+const overlayState = E.createInitialTetrisState(C);
+E.resetTetrisState(overlayState, C);
+const overlayUi = {
+	boardCells: Array.from({ length: overlayState.rows * overlayState.cols }, () => ({ className: "cell" })),
+	holdCells: Array.from({ length: C.PREVIEW_SIZE * C.PREVIEW_SIZE }, () => ({ className: "" })),
+	previewCells: Array.from({ length: C.PREVIEW_SIZE * C.PREVIEW_SIZE }, () => ({ className: "" })),
+	holdHint: makeUiElement(),
+	score: makeUiElement(),
+	lines: makeUiElement(),
+	level: makeUiElement(),
+	speed: makeUiElement(),
+	status: makeUiElement(),
+	startButton: makeUiElement(),
+	pauseButton: makeUiElement(),
+	resetButton: makeUiElement(),
+	hardDropButton: makeUiElement(),
+	holdButton: makeUiElement(),
+	ghostToggleButton: makeUiElement(),
+	soundToggleButton: makeUiElement(),
+	clearHighscoresButton: makeUiElement(),
+	overlay: makeUiElement(),
+	overlayText: makeUiElement(),
+	soundEnabled: true,
+	baseDropMs: C.BASE_DROP_MS,
+	highscoreValues: [],
+	bestScoreValue: 0,
+	lastGameWasNewBest: false,
+};
+
+R.renderTetris(overlayState, overlayUi, C);
+assert("Overlay skjules i starttilstand", overlayUi.overlay.classList.contains("is-hidden") === true);
+
+overlayState.gameOver = true;
+overlayState.score = 4321;
+overlayState.lines = 12;
+overlayUi.lastGameWasNewBest = true;
+R.renderTetris(overlayState, overlayUi, C);
+assert("Overlay vises ved game over", overlayUi.overlay.classList.contains("is-hidden") === false);
+assert("Overlay-tekst viser score", overlayUi.overlayText.textContent.includes("004321"));
+assert("Overlay-tekst viser New best", overlayUi.overlayText.textContent.includes("New best!"));
 
 section("Reset + spawn");
 E.resetTetrisState(state, C);
